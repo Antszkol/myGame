@@ -1,0 +1,12 @@
+# Build catalogues
+build/
+
+# Diagram
+materials/
+
+tile.hpp
+tile.cpp
+map.hpp
+map.cpp
+
+Notes.md
