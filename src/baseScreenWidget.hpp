@@ -2,17 +2,17 @@
 #include <QWidget>
 #include "screen.hpp"
 
-class menuWidget;
-class battleWidget;
+class MenuWidget;
+class BattleMenuWidget;
 
-class baseScreenWidget : public QWidget{
+class BaseScreenWidget : public QWidget{
     Q_OBJECT
 
     signals:
         void screenChanged(Screen target);
 
     public:
-        baseScreenWidget();
+        BaseScreenWidget();
 
     public slots:
         void navigateTo(Screen target);

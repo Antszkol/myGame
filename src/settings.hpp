@@ -6,7 +6,7 @@
 
 using namespace std;
 
-class setting{
+class Setting{
     public:
         void saveSettings(int brightness, pair<int, int> windowSize);
 
@@ -14,10 +14,10 @@ class setting{
         pair<int, int> getWindowSize() const;
         vector<pair<int, int>> getAvailableResolutions() const;
     private:
-        string path;
-        int brightness;
-        pair<int, int> windowSize = {1920, 1080};
-        vector<pair<int, int>> availableResolutions = {
+        string path_;
+        int brightness_;
+        pair<int, int> windowSize_ = {1920, 1080};
+        vector<pair<int, int>> availableResolutions_ = {
             {1920, 1080},
             {1280, 720},
             {960, 540}

@@ -14,24 +14,24 @@
 using namespace std;
 using json = nlohmann::json;
 
-class game{
-    public: 
-        game(){};
+class Game{
+    public:
+        Game(){};
 
     private:
-        //battle* battlePtr;     // pointer - battle can be null
-        setting settings; // reference - settings must exist
-};  
+        //Battle* battlePtr_;     // pointer - battle can be null
+        Setting settings_; // reference - settings must exist
+};
 
-/* 
-void game::createBattle(){
-    
+/*
+void Game::createBattle(){
+
 }
 */
 
 int main(int argc, char *argv[]){
     QApplication app(argc, argv);
-    mainWidget window;
+    MainWidget window;
     window.show();
 
     return app.exec();

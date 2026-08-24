@@ -5,8 +5,8 @@
 #include "menuWidget.hpp"
 #include "settingsWidget.hpp"
 
-menuWidget::menuWidget(setting* settingsPtr){
-    this->settingsPtr = settingsPtr;
+MenuWidget::MenuWidget(Setting* settingsPtr){
+    this->settingsPtr_ = settingsPtr;
 
     QFont font("Garamond", 16);
     this->setFont(font);
@@ -15,9 +15,9 @@ menuWidget::menuWidget(setting* settingsPtr){
     QPushButton* settingsButton = new QPushButton("Settings", this);
     QPushButton* exitButton = new QPushButton("Exit", this);
 
-    connect(battleButton, &QPushButton::clicked, this, [this](){navigateTo(Screen::battle);});
+    connect(battleButton, &QPushButton::clicked, this, [this](){navigateTo(Screen::battleMenuWidget);});
     connect(settingsButton, &QPushButton::clicked, this, [this](){
-        settingsWidget* dialog = new settingsWidget(this->settingsPtr, this);
+        SettingsWidget* dialog = new SettingsWidget(this->settingsPtr_, this);
         dialog->exec();
     });
     connect(exitButton, &QPushButton::clicked, this, [this](){
@@ -30,4 +30,4 @@ menuWidget::menuWidget(setting* settingsPtr){
     layout->addWidget(exitButton);
 }
 
-menuWidget::~menuWidget(){}
+MenuWidget::~MenuWidget(){}

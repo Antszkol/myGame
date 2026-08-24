@@ -6,8 +6,10 @@
 
 using namespace std;
 
-class battleSetting{
+class BattleSetting{
     public:
+        BattleSetting();
+
         void saveBattleSettings(int newStartGold, int newMaxUnit);
 
         // const after getters to ensure they don't modify the object
@@ -15,6 +17,6 @@ class battleSetting{
         int getStartGold() const;
 
     private:
-        int maxUnit;
-        int startGold;
+        int maxUnit_;
+        int startGold_;
 };
