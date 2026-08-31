@@ -101,7 +101,8 @@ void MapWidget::onTileClicked(TileWidget* tileWidgetPtr){
 
     if(this->turnHandlerPtr_->getActionMode() == ActionMode::MoveUnit){
         // MoveUnit : second click (unitSelected_ set)
-        if(this->unitSelected_ != nullptr && std::find(this->tilesSelected_.begin(), this->tilesSelected_.end(), tileWidgetPtr->getTilePtr()) != this->tilesSelected_.end()){
+        if(this->unitSelected_ != nullptr && this->tilesSelectedMap_.contains(tileWidgetPtr->getTilePtr())){
+            this->unitSelected_->subtractSpeed(this->tilesSelectedMap_.at(tileWidgetPtr->getTilePtr())); // tutaj odejmij speed z mapy
             this->turnHandlerPtr_->setActionMode(ActionMode::None);
             this->turnHandlerPtr_->moveUnit(this->tileSet_->getTileWidgetPtr(), tileWidgetPtr);
             this->removeTileSelection();
@@ -112,10 +113,10 @@ void MapWidget::onTileClicked(TileWidget* tileWidgetPtr){
         else if(tileWidgetPtr->getTilePtr()->getOccupant() && this->unitSelected_ == nullptr){
             this->setTile(tileWidgetPtr);
             this->unitSelected_ = tileWidgetPtr->getTilePtr()->getOccupant();
-            std::map<Tile*, int> distMap = this->finder->findMovePaths(tileWidgetPtr->getTilePtr(), this->unitSelected_->getUnitStats());
+            std::map<Tile*, int> distMap = this->finder->findMovePaths(tileWidgetPtr->getTilePtr(), this->unitSelected_->getRemainingSpeed());
             for(auto const& [tilePtr, distance] : distMap){
-                if(distance < tileWidgetPtr->getTilePtr()->getOccupant()->getUnitStats().speed_){
-                    this->addTileSelection(tilePtr);
+                if(distance < this->unitSelected_->getRemainingSpeed()){
+                    this->addTileSelection(tilePtr, distance);
                     tilePtr->getTileWidgetPtr()->setBrush(QBrush(Qt::green, Qt::SolidPattern));
                 }
             }
@@ -128,7 +129,7 @@ void MapWidget::onTileClicked(TileWidget* tileWidgetPtr){
 }
 
 void MapWidget::removeTileSelection(){
-    for(const auto& tilePtr : this->tilesSelected_){
+    for(const auto& [tilePtr, distance] : this->tilesSelectedMap_){
         if(tilePtr->getTileType() == grass){
             tilePtr->getTileWidgetPtr()->setBrush(QBrush(QColor(64, 255, 64, 255), Qt::CrossPattern));
         }
@@ -139,13 +140,13 @@ void MapWidget::removeTileSelection(){
             tilePtr->getTileWidgetPtr()->setBrush(QBrush(QColor(64, 64, 255, 255), Qt::Dense3Pattern));
         }
     }
-    this->tilesSelected_.clear();
+    this->tilesSelectedMap_.clear();
 
     return;
 }
 
-void MapWidget::addTileSelection(Tile* tilePtr){
-    this->tilesSelected_.push_back(tilePtr);
+void MapWidget::addTileSelection(Tile* tilePtr, int distance){
+    this->tilesSelectedMap_[tilePtr] = distance;
     return;
 }
 

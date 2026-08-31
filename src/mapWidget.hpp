@@ -32,8 +32,7 @@ class MapWidget : public QGraphicsView {
         void unsetUnit(TileWidget* tileWidgetPtr);
         void setUnit(TileWidget* tileWidgetPtr, Unit* unitPtr);
 
-        void addTileSelection(Tile* tilePtr);
-        std::vector<Tile*> getTileSelection();
+        void addTileSelection(Tile* tilePtr, int distance);
         void removeTileSelection();
 
         void setTile(TileWidget* tileWidgetPtr);
@@ -49,7 +48,8 @@ class MapWidget : public QGraphicsView {
         bool isTileset_;
         Tile* tileSet_;
         Unit* unitSelected_;
-        std::vector<Tile*> tilesSelected_;
+        std::map<Tile*, int> tilesSelectedMap_;
+        
 
         void paintTile(QPainter* painter, TileWidget* tile);
 };

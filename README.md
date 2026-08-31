@@ -51,25 +51,51 @@ cmake --build .
 
 ## Repo structure
 
+All source lives flat under `src/`; `CMakeLists.txt` sits at the repo root and lists every `.cpp` explicitly (no globbing).
+
 ```
 .
-├── game.cpp
-├── mainWidget.cpp               # top-level window, screen stack
-├── baseScreenWidget.cpp         # shared base for the screen widgets below
-├── menuWidget.cpp
-├── battleMenuWidget.cpp          # pre-battle menu screen
-├── battleSettingsWidget.cpp     # QDialog for battle settings
-├── settingsWidget.cpp           # QDialog for general settings
-├── settings.cpp                 # general settings data holder
-├── battleSettings.cpp           # battle-specific settings data holder
-├── screen.hpp                   # Screen enum used for navigation
-├── map.cpp / tile.cpp / mapWidget.cpp   # early, unfinished battle-grid sketches
-├── materials/diagram.webp       # target class diagram for the full design
 ├── CMakeLists.txt
-└── README.md
+├── README.md
+├── Notes.md
+└── src
+    ├── game.cpp                             # entry point
+    ├── mainWidget.cpp / .hpp                # top-level window, owns the QStackedWidget screen stack
+    ├── baseScreenWidget.cpp / .hpp          # shared base for full-page screens
+    ├── screen.hpp                            # Screen enum used for navigation
+    │
+    ├── menuWidget.cpp / .hpp                # main menu screen
+    ├── battleMenuWidget.cpp / .hpp          # pre-battle menu screen (creates the Battle)
+    ├── settingsWidget.cpp / .hpp            # QDialog for general settings
+    ├── battleSettingsWidget.cpp / .hpp      # QDialog for battle settings
+    ├── settings.cpp / .hpp                  # general settings data holder
+    ├── battleSettings.cpp / .hpp            # battle-specific settings data holder
+    │
+    ├── battle.cpp / .hpp                    # owns a Map + BattleSetting for one battle
+    ├── battleWidget.cpp / .hpp              # in-battle screen: hosts MapWidget, ActionWidget, ShopWidget
+    ├── turnHandler.cpp / .hpp               # turn/player state machine, action mode, recruit/move dispatch
+    ├── actionWidget.cpp / .hpp              # in-battle action bar (end turn, move unit, ...)
+    ├── actionMode.hpp                        # ActionMode enum (None/RecruitUnit/AttackUnit/MoveUnit)
+    ├── shopWidget.cpp / .hpp                # unit-recruitment shop UI
+    ├── player.cpp / .hpp                    # per-player state (gold, ...)
+    │
+    ├── map.cpp / .hpp                       # tile grid, neighbour lookup
+    ├── mapWidget.cpp / .hpp                 # QGraphicsView rendering the map, tile hover/click handling
+    ├── mapTiles.hpp                          # hardcoded tile-layout presets (river, bog)
+    ├── mapType.hpp                            # mapType enum (which preset to load)
+    ├── tile.cpp / .hpp                      # single grid cell: type, occupant, walkability
+    ├── tileType.hpp                          # TileType enum (grass/water/mud/barricade)
+    ├── tileWidget.cpp / .hpp                # QGraphicsItem for one tile
+    ├── finder.cpp / .hpp                    # pathfinding: reachable tiles within a unit's speed
+    │
+    ├── unit.cpp / .hpp                      # base unit: stats + linked UnitWidget
+    ├── unitStats.hpp                         # UnitStats struct + per-UnitType stat table
+    ├── unitType.hpp                          # UnitType enum
+    ├── unitWidget.cpp / .hpp                # QGraphicsItem for one unit, parented to its TileWidget
+    └── footman.cpp / .hpp                   # footman-specific Unit subclass
 ```
 
-Note: `map.cpp` currently has a syntax error and won't compile — the build is broken until that's fixed. Class names throughout the codebase use PascalCase (`MainWidget`, `Setting`, `BattleSetting`, ...); member variables use camelCase with a trailing underscore (`settingsPtr_`, `startGold_`, ...).
+Class names use PascalCase (`MainWidget`, `TurnHandler`, `UnitWidget`, ...); member variables use camelCase with a trailing underscore (`settingsPtr_`, `unitSelected_`, ...).
 
 ## Author
 

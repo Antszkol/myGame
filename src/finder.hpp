@@ -8,7 +8,7 @@ class Finder{
     public:
         Finder(Map& map);
 
-        std::map<Tile*, int> findMovePaths(Tile* startingTile, UnitStats unitStats);
+        std::map<Tile*, int> findMovePaths(Tile* startingTile, int speed);
         std::vector<Tile*> FindTargets(Tile* startingTile, UnitStats unitStats);
 
     private:

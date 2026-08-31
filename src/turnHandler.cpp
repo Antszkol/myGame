@@ -54,6 +54,7 @@ void TurnHandler::switchPlayer(){
         currentPlayerPtr_ = players_.first;
         this->actionWidgetPtr_->setCurrentPlayerStats(players_.first);
     }
+    this->currentPlayerPtr_->refreshUnitsSpeed();
     return;
 }
 
@@ -95,6 +96,7 @@ void TurnHandler::confirmUnitDeployment(TileWidget* tileWidgetPtr){
         Unit* unitPtr = new Unit(this->pendingUnitType_, UnitStatsMap.at(this->pendingUnitType_), unitWidgetPtr);
         unitWidgetPtr->setUnitPtr(unitPtr);
         tileWidgetPtr->getTilePtr()->setOccupation(unitWidgetPtr->getUnitPtr());
+        this->currentPlayerPtr_->addUnit(unitPtr);
         this->actionMode_ = ActionMode::None;
         this->getActionWidgetPtr()->setCurrentPlayerStats(this->currentPlayerPtr_);
     }

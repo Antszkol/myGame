@@ -10,6 +10,9 @@ class Player {
         int getPlayerIdx();
         void subtractGold(int minus);
 
+        void refreshUnitsSpeed();
+        void addUnit(Unit* unitPtr);
+
     private:
         std::vector<Unit*> units_;
         int gold_;

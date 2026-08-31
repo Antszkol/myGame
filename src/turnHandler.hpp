@@ -35,6 +35,7 @@ class TurnHandler : public QObject {
         int turnNumber_;
         bool isTurnFinished_;
         std::pair<Player*, Player*> players_;
+        std::map<Unit*, int> currentSpeedMap_;
         Player* currentPlayerPtr_;
         BattleWidget* battleWidgetPtr_;
         ShopWidget* shopWidgetPtr_;

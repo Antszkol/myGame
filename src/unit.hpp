@@ -10,9 +10,13 @@ class Unit {
         UnitStats getUnitStats() const;
         int getUnitType() const;
         UnitWidget* getUnitWidgetPtr() const;
+        int getRemainingSpeed();
+        void subtractSpeed(int subtract);
+        void setRemainingSpeed(int speed);
 
     protected:
         const int unitType_;
+        int remainingSpeed_;
         UnitWidget* unitWidgetPtr_;
         const UnitStats unitStats_;  
 };
