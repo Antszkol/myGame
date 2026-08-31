@@ -3,17 +3,19 @@
 #include <QBrush>
 
 #include "tileWidget.hpp"
-#include "unit.hpp"
 #include "unitType.hpp"
+
+class Unit;
 
 class UnitWidget : public QGraphicsRectItem {
     public:
         UnitWidget(int unitType, TileWidget* destinationTileWidgetPtr);
 
-        int unit_;
-
         void setCurrentTileWidget(TileWidget* tileWidgetPtr);
+        Unit* getUnitPtr();
+        void setUnitPtr(Unit* unitPtr);
     
     private:
         TileWidget* tileWidgetPtr_;
+        Unit* unitPtr_;
     };

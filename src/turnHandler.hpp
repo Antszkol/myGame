@@ -1,30 +1,44 @@
 #pragma once
 #include <QObject>
+#include <utility>
 #include "shopWidget.hpp"
 #include "tileWidget.hpp"
 #include "player.hpp"
 #include "unitWidget.hpp"
 #include "actionMode.hpp"
+#include "actionWidget.hpp"
+#include "unitStats.hpp"
+#include "unitType.hpp"
+#include "unitWidget.hpp"
 
 class BattleWidget; // no include because of circular include
 
 class TurnHandler : public QObject {
     public slots:
-        void recruitUnit(Player* currentPlayerPtr, UnitType unitTypeIdx);
+        void recruitUnitSlot(Player* currentPlayerPtr, UnitType unitTypeIdx);
+        void moveUnitSlot();
+        void switchPlayerSlot();
 
     public:
-        TurnHandler(BattleWidget* battleWidgetPtr, ShopWidget* shopWidgetPtr);
+        TurnHandler(BattleWidget* battleWidgetPtr, ShopWidget* shopWidgetPtr, ActionWidget* actionWidgetPtr);
             
         ActionMode getActionMode(){return this->actionMode_;};    
+        void moveUnit(TileWidget* tileWidgetStart, TileWidget* tileWidgetDest);
         void confirmUnitDeployment(TileWidget* tileWidgetPtr);
+        void switchPlayer();
+        void setActionMode(ActionMode actionMode);
+
+        Player* getPlayerPtr(int playerIdx);
+        ActionWidget* getActionWidgetPtr();
 
     private:
         int turnNumber_;
         bool isTurnFinished_;
-        pair<Player*, Player*> players_;
-        Player* currentPlayer_;
+        std::pair<Player*, Player*> players_;
+        Player* currentPlayerPtr_;
         BattleWidget* battleWidgetPtr_;
         ShopWidget* shopWidgetPtr_;
+        ActionWidget* actionWidgetPtr_;
         ActionMode actionMode_;
         UnitType pendingUnitType_;
 };

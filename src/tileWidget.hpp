@@ -1,9 +1,9 @@
 #pragma once
 #include <QGraphicsRectItem>
 #include <utility>
-#include "tile.hpp"
 
 class MapWidget;
+class Tile;
 
 class TileWidget : public QGraphicsRectItem {
     public:

@@ -1,5 +1,6 @@
 #include "tileWidget.hpp"
 #include "mapWidget.hpp"
+#include "tile.hpp"
 
 TileWidget::TileWidget(Tile* tilePtr, MapWidget* mapWidgetPtr) : QGraphicsRectItem(){
     setAcceptHoverEvents(true);
@@ -16,7 +17,6 @@ Tile* TileWidget::getTilePtr(){
 };
 
 void TileWidget::hoverEnterEvent(QGraphicsSceneHoverEvent* event) {
-    setBrush(QBrush(Qt::yellow, Qt::SolidPattern));
     if(this->mapWidgetPtr_){
         mapWidgetPtr_->onTileHovered(this);
     }

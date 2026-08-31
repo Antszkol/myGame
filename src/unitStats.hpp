@@ -1,4 +1,5 @@
 #pragma once
+#include "unitType.hpp"
 
 struct UnitStats {
     int unitType_,
@@ -9,9 +10,7 @@ struct UnitStats {
     cost_;
 };
 
-const UnitStats footmanStats = {0, 100, 40, 1, 1, 25};
-
 inline std::map<UnitType, UnitStats> UnitStatsMap = {
-    {UnitType::footman, {0, 100, 40, 1, 1, 25}},
-    {UnitType::archer, {1, 80, 30, 3, 2, 20}}
+    {UnitType::footman, {0, 100, 40, 1, 3, 25}},
+    {UnitType::archer, {1, 80, 30, 3, 5, 20}}
 };

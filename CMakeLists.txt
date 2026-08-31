@@ -1,16 +1,16 @@
 cmake_minimum_required(VERSION 3.16)
 project(myGame)
 
-set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTOUIC ON)
 set(CMAKE_AUTORCC ON)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 find_package(Qt5 COMPONENTS Widgets REQUIRED)
-find_package(nlohmann_json 3.11 REQUIRED)
 
 add_executable(myGame
     src/game.cpp
@@ -35,6 +35,8 @@ add_executable(myGame
     src/footman.cpp
     src/turnHandler.cpp
     src/player.cpp
+    src/actionWidget.cpp
+    src/finder.cpp
 )
 
 target_include_directories(myGame PRIVATE src)

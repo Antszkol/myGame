@@ -1,3 +1,3 @@
 #include "footman.hpp"
 
-Footman::Footman() : Unit(footmanStats), armour_(30) {}
+Footman::Footman(UnitWidget* unitWidgetPtr) : Unit(footman, UnitStatsMap.at(footman), unitWidgetPtr), armour_(30) {}

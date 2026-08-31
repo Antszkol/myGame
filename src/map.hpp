@@ -11,6 +11,9 @@ class Map{
         Map(pair<int, int> argMapSize);
         pair<int, int> getMapSize() const;
         Tile* getTileByIndex(pair<int, int> argTileIndex) const;
+        vector<Tile*> getMapTiles();
+        vector<Tile*> getTileNeighbours(Tile* baseTile);
+        bool areTilesAdjacent(Tile* baseTilePtr, Tile* neighbourTilePtr);
 
     private:
         pair<int, int> mapSize_;

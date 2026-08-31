@@ -35,7 +35,7 @@ BattleMenuWidget::BattleMenuWidget(BattleSetting* battleSettingPtr){
 BattleMenuWidget::~BattleMenuWidget(){}
 
 void BattleMenuWidget::createBattle(){
-    Map* mapPtr = new Map({8, 8});
+    Map* mapPtr = new Map({10, 10});
     Battle* battlePtr = new Battle(mapPtr, battleSettingsWidgetPtr_->getBattleSetting());
     emit battleCreated(battlePtr, battleSettingsWidgetPtr_->getBattleSetting());
 }

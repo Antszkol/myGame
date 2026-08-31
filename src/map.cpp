@@ -19,6 +19,31 @@ void Map::loadMap(){
     }
 }
 
+vector<Tile*> Map::getMapTiles(){
+    return this->mapTiles_;
+}
+
+bool Map::areTilesAdjacent(Tile* baseTilePtr, Tile* neighbourTilePtr){
+    pair<int, int> baseTileIdx = baseTilePtr->getTileIndex();
+    pair<int, int> neighbourTileIdx = neighbourTilePtr->getTileIndex();
+    if((std::abs(neighbourTileIdx.first - baseTileIdx.first) == 1 && neighbourTileIdx.second == baseTileIdx.second) || (std::abs(neighbourTileIdx.second - baseTileIdx.second) == 1 && neighbourTileIdx.first == baseTileIdx.first)){
+        return true;
+    }
+    else{
+        return false;
+    }
+}
+
+vector<Tile*> Map::getTileNeighbours(Tile* baseTilePtr){
+    std::vector<Tile*> neighbourTiles;
+    for(const auto& neighbourTilePtr : this->mapTiles_){
+        if(areTilesAdjacent(baseTilePtr, neighbourTilePtr)){
+            neighbourTiles.push_back(neighbourTilePtr);
+        }
+    }
+    return neighbourTiles;
+}
+
 Tile* Map::getTileByIndex(pair<int, int> argTileIndex) const {
     return this->mapTiles_[argTileIndex.first * this->getMapSize().first + argTileIndex.second];
 }

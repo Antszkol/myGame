@@ -21,7 +21,8 @@ class BattleWidget : public BaseScreenWidget{
         BattleWidget();
         ~BattleWidget();
 
-        void setShop();
+        void setShopWidget();
+        void setActionWidget();
         MapWidget* getMapWidgetPtr();
 
     private:
@@ -29,6 +30,7 @@ class BattleWidget : public BaseScreenWidget{
         MapWidget* mapWidgetPtr_;
         BattleSetting* battleSettingPtr_;
         ShopWidget* shopWidgetPtr_;
+        ActionWidget* actionWidgetPtr_;
         TurnHandler* turnHandlerPtr_;
         Battle* battlePtr_;
         QLabel* goldLabel_;

@@ -12,30 +12,29 @@
 BattleWidget::BattleWidget(){
     QFont font("Garamond", 16);
     this->setFont(font);
-
-    QFrame* hudPanel = new QFrame(this);
-    hudPanel->setFrameShape(QFrame::Box);
-    QVBoxLayout* hudLayout = new QVBoxLayout(hudPanel);
-
-    this->goldLabel_ = new QLabel("Gold: -", hudPanel);
-    hudLayout->addWidget(goldLabel_);
-
-    QPushButton* backButton = new QPushButton("Back", hudPanel);
-    connect(backButton, &QPushButton::clicked, this, [this](){navigateTo(Screen::menuWidget);});
-    hudLayout->addWidget(backButton);
-
+    
     this->layout_ = new QHBoxLayout(this);
-    this->setShop();
-    this->turnHandlerPtr_ = new TurnHandler(this, this->shopWidgetPtr_);
+    this->setShopWidget();
+    this->setActionWidget();
+    this->turnHandlerPtr_ = new TurnHandler(this, this->shopWidgetPtr_, this->actionWidgetPtr_);
+    this->actionWidgetPtr_->setCurrentPlayerStats(this->turnHandlerPtr_->getPlayerPtr(1));
 
-    layout_->addWidget(hudPanel, 1);
+    QPushButton* backButton = new QPushButton("Back", actionWidgetPtr_);
+    connect(backButton, &QPushButton::clicked, this, [this](){navigateTo(Screen::menuWidget);});
+    this->actionWidgetPtr_->layout_->addWidget(backButton);
 }
 
 BattleWidget::~BattleWidget(){}
 
-void BattleWidget::setShop(){
+void BattleWidget::setShopWidget(){
     shopWidgetPtr_ = new ShopWidget();
     layout_->insertWidget(0, shopWidgetPtr_, 1);
+    return;
+}
+
+void BattleWidget::setActionWidget(){
+    actionWidgetPtr_ = new ActionWidget();
+    layout_->insertWidget(0, actionWidgetPtr_, 1);
     return;
 }
 

@@ -5,9 +5,11 @@
 #include <QGraphicsView>
 #include <QGraphicsScene>
 #include <vector>
+#include <algorithm>
 
 #include "baseScreenWidget.hpp"
 #include "map.hpp"
+#include "finder.hpp"
 #include "tileWidget.hpp"
 #include "tileType.hpp"
 #include "turnHandler.hpp"
@@ -21,17 +23,33 @@ class MapWidget : public QGraphicsView {
         QPainter painter_;
         QBrush brush_;
 
-        TileWidget* getTileWidgetPtr(pair<int, int> tileIdx);
+        TileWidget* getTileWidgetPtr(pair<int, int> tileIdx) const;
+        Map* getMapPtr() const;
         void onTileHovered(TileWidget* tileWidgetPtr);
         void onTileLeft(TileWidget* tileWidgetPtr);
         void onTileClicked(TileWidget* tileWidgetPtr);
 
+        void unsetUnit(TileWidget* tileWidgetPtr);
+        void setUnit(TileWidget* tileWidgetPtr, Unit* unitPtr);
+
+        void addTileSelection(Tile* tilePtr);
+        std::vector<Tile*> getTileSelection();
+        void removeTileSelection();
+
+        void setTile(TileWidget* tileWidgetPtr);
+        bool isTileset();
+
     private:
+        Finder* finder;
         QGraphicsScene* scene;
         Map* map;
         TurnHandler* turnHandlerPtr_;
         std::vector<TileWidget*> tileWidgets_;
 
-        void loadMap();
+        bool isTileset_;
+        Tile* tileSet_;
+        Unit* unitSelected_;
+        std::vector<Tile*> tilesSelected_;
+
         void paintTile(QPainter* painter, TileWidget* tile);
 };

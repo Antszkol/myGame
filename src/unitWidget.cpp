@@ -1,7 +1,7 @@
 #include "unitWidget.hpp"
+#include "unit.hpp"
 
 UnitWidget::UnitWidget(int unitType, TileWidget* destinationTileWidgetPtr){
-    this->unit_ = unitType;
     int scaleFactor = 40;
     this->setRect(20, 20, scaleFactor, scaleFactor);
     if(unitType == footman){
@@ -11,6 +11,15 @@ UnitWidget::UnitWidget(int unitType, TileWidget* destinationTileWidgetPtr){
         this->setBrush(QBrush(Qt::yellow, Qt::Dense1Pattern));
     }
     this->setCurrentTileWidget(destinationTileWidgetPtr);
+}
+
+void UnitWidget::setUnitPtr(Unit* unitPtr){
+    this->unitPtr_ = unitPtr;
+    return;
+}
+
+Unit* UnitWidget::getUnitPtr(){
+    return this->unitPtr_;
 }
 
 void UnitWidget::setCurrentTileWidget(TileWidget* tileWidgetPtr){

@@ -1,6 +1,7 @@
 #pragma once
 #include <QWidget>
 #include <QGridLayout>
+#include <QLabel>
 
 #include "unitType.hpp"
 #include "player.hpp"

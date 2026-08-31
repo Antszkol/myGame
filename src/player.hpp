@@ -4,12 +4,14 @@
 
 class Player {
     public:
-        Player();
+        Player(int playerIdx);
 
         int getGold();
+        int getPlayerIdx();
         void subtractGold(int minus);
 
     private:
         std::vector<Unit*> units_;
         int gold_;
+        int playerIdx_;
 };
