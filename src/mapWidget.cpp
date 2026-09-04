@@ -56,7 +56,8 @@ void MapWidget::onTileHovered(TileWidget* tileWidgetPtr){
         return;
     }
     else if(this->turnHandlerPtr_->getActionMode() == ActionMode::RecruitUnit){
-        if(tileWidgetPtr->getTilePtr()->isPassable()){
+        if(tileWidgetPtr->getTilePtr()->isPassable() && 
+            std::abs(tileWidgetPtr->getTilePtr()->getTileIndex().first - this->turnHandlerPtr_->getCurrentPlayerPtr()->getPlayerStartColumn()) < 2){
             tileWidgetPtr->setBrush(QBrush(Qt::green, Qt::SolidPattern));
         }
         else{
@@ -99,9 +100,14 @@ void MapWidget::onTileClicked(TileWidget* tileWidgetPtr){
         }
     }
 
+    // klikam w tile, zaznaczony jest na czerwono (bo unit juz sie ruszyl)
+    // end turn, ale tile z unitem nadal na czerwono
+    // kolejna moja tura, tile nadal na czerwono, musze kliknac jeszcze raz move unit zeby sie podswietlily opcje na zielono
+
+    // MOVE UNIT
     if(this->turnHandlerPtr_->getActionMode() == ActionMode::MoveUnit){
         // MoveUnit : second click (unitSelected_ set)
-        if(this->unitSelected_ != nullptr && this->tilesSelectedMap_.contains(tileWidgetPtr->getTilePtr())){
+        if(this->unitSelected_ != nullptr && tileWidgetPtr->getTilePtr()->isPassable() && this->tilesSelectedMap_.contains(tileWidgetPtr->getTilePtr())){
             this->unitSelected_->subtractSpeed(this->tilesSelectedMap_.at(tileWidgetPtr->getTilePtr())); // tutaj odejmij speed z mapy
             this->turnHandlerPtr_->setActionMode(ActionMode::None);
             this->turnHandlerPtr_->moveUnit(this->tileSet_->getTileWidgetPtr(), tileWidgetPtr);
@@ -109,22 +115,49 @@ void MapWidget::onTileClicked(TileWidget* tileWidgetPtr){
             this->unitSelected_ = nullptr;
             this->tileSet_ = nullptr;
         }
+
         // MoveUnit : first click (unitSelected_ unset)
-        else if(tileWidgetPtr->getTilePtr()->getOccupant() && this->unitSelected_ == nullptr){
+        else if(tileWidgetPtr->getTilePtr()->getOccupant() 
+                && this->unitSelected_ == nullptr 
+                && tileWidgetPtr->getTilePtr()->getOccupant()->getRemainingSpeed() > 0){
             this->setTile(tileWidgetPtr);
             this->unitSelected_ = tileWidgetPtr->getTilePtr()->getOccupant();
             std::map<Tile*, int> distMap = this->finder->findMovePaths(tileWidgetPtr->getTilePtr(), this->unitSelected_->getRemainingSpeed());
             for(auto const& [tilePtr, distance] : distMap){
-                if(distance < this->unitSelected_->getRemainingSpeed()){
-                    this->addTileSelection(tilePtr, distance);
-                    tilePtr->getTileWidgetPtr()->setBrush(QBrush(Qt::green, Qt::SolidPattern));
+                if((distance <= this->unitSelected_->getRemainingSpeed()) &&
+                    tilePtr->getTileWidgetPtr() != tileWidgetPtr){
+                    if(tilePtr->isPassable()){
+                        this->addTileSelection(tilePtr, distance);
+                        tilePtr->getTileWidgetPtr()->setBrush(QBrush(Qt::green, Qt::SolidPattern));
+                    }
+                    if(tilePtr->isPassable() == false){
+                        this->addTileSelection(tilePtr, distance);
+                        tilePtr->getTileWidgetPtr()->setBrush(QBrush(Qt::red, Qt::SolidPattern));
+                    }
                 }
             }
         }
     }
 
     if(this->turnHandlerPtr_->getActionMode() == ActionMode::AttackUnit){
-        // code for ensuring a unit's objective is within its range
+        // second click
+        if(this->unitSelected_ != nullptr && std::find(this->targetTileVector_.begin(), this->targetTileVector_.end(), tileWidgetPtr->getTilePtr()) != this->targetTileVector_.end()){
+            this->turnHandlerPtr_->setActionMode(ActionMode::None);
+            this->turnHandlerPtr_->attackUnit(this->tileSet_->getTileWidgetPtr(), tileWidgetPtr);
+            this->removeTargetSelection();
+            this->unitSelected_ = nullptr;
+            this->tileSet_ = nullptr;
+        }
+        // first click
+        else if(tileWidgetPtr->getTilePtr()->getOccupant() && this->unitSelected_ == nullptr){
+            this->setTile(tileWidgetPtr);
+            this->unitSelected_ = tileWidgetPtr->getTilePtr()->getOccupant();
+            std::vector<Tile*> targetTileVector = this->finder->FindTargets(tileWidgetPtr->getTilePtr(), this->unitSelected_->getUnitStats().range_, this->turnHandlerPtr_->getCurrentPlayerPtr());
+            for(auto const& tilePtr : targetTileVector){
+                this->addTargetSelection(tilePtr);
+                tilePtr->getTileWidgetPtr()->setBrush(QBrush(Qt::blue, Qt::SolidPattern));
+            }
+        }
     }
 }
 
@@ -145,8 +178,30 @@ void MapWidget::removeTileSelection(){
     return;
 }
 
+void MapWidget::removeTargetSelection(){
+    for(const auto& tilePtr : this->targetTileVector_){
+        if(tilePtr->getTileType() == grass){
+            tilePtr->getTileWidgetPtr()->setBrush(QBrush(QColor(64, 255, 64, 255), Qt::CrossPattern));
+        }
+        if(tilePtr->getTileType() == mud){
+            tilePtr->getTileWidgetPtr()->setBrush(QBrush(QColor(255, 255, 128, 255), Qt::Dense1Pattern));
+        }
+        if(tilePtr->getTileType() == water){
+            tilePtr->getTileWidgetPtr()->setBrush(QBrush(QColor(64, 64, 255, 255), Qt::Dense3Pattern));
+        }
+    }
+    this->targetTileVector_.clear();
+
+    return;
+}
+
 void MapWidget::addTileSelection(Tile* tilePtr, int distance){
     this->tilesSelectedMap_[tilePtr] = distance;
+    return;
+}
+
+void MapWidget::addTargetSelection(Tile* tilePtr){
+    this->targetTileVector_.push_back(tilePtr);
     return;
 }
 

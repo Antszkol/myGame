@@ -22,7 +22,7 @@ int Tile::getSpeedImpact() const {
 }
 
 bool Tile::isPassable(){
-    if(this->occupant_ != nullptr) return false;
+    if(this->occupant_ != nullptr || this->getTileType() == TileType::water) return false;
     else return true;
 }
 

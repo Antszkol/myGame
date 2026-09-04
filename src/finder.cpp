@@ -9,7 +9,7 @@ std::map<Tile*, int> Finder::findMovePaths(Tile* startingTile, int speed){
     std::map<Tile*, int> distMap;
 
     for(const auto& tile : this->map_.getMapTiles()){
-        if(std::abs(tileIdx.first - tile->getTileIndex().first) < speed && std::abs(tileIdx.second - tile->getTileIndex().second) < speed){
+        if(std::abs(tileIdx.first - tile->getTileIndex().first) <= speed && std::abs(tileIdx.second - tile->getTileIndex().second) <= speed){
             distMap.insert({tile, 1000000});
         }
     }
@@ -47,14 +47,56 @@ std::map<Tile*, int> Finder::findMovePaths(Tile* startingTile, int speed){
     return distMap;
 };
 
-/*
-    DIJKSTRA:
+std::vector<Tile*> Finder::FindTargets(Tile* startingTilePtr, int range, Player* currentPlayerPtr){
+    pair<int, int> tileIdx = startingTilePtr->getTileIndex();
+    std::map<Tile*, int> distMap;
 
-    Create a distance queue with all tiles within the unit's speed (don't load all the tiles)
-    Create a distance queue for all the tiles withint he range
+    for(const auto& tile : this->map_.getMapTiles()){
+        if(std::abs(tileIdx.first - tile->getTileIndex().first) <= range && std::abs(tileIdx.second - tile->getTileIndex().second) <= range){
+            distMap.insert({tile, 1000000});
+        }
+    }
 
-    Create a priority queue, (fill it with pairs<tile, distance> later, with distance set to infinite value by default)
+    std::queue<std::pair<Tile*, int>> prioQueue;
+    prioQueue.push(std::pair<Tile*, int>(startingTilePtr, 0));
+    distMap[startingTilePtr] = 0;
 
-    Pop the first element from priority queue, for each adjacent tile, if tile distance + edge weight < adjacent tile distance,
-    update adjacent tile distance to distance + edge weight. Insert {distance[adjacent tile], adjacent tile} into the priority queue.
-*/
+    while(!prioQueue.empty()){
+        auto [tile, dist] = prioQueue.front();
+        prioQueue.pop();
+
+        if(dist > distMap.at(tile)){
+            continue;
+        }
+
+        //first, check if all neighbours are in the map
+        std::vector<Tile*> neighbourTiles = this->map_.getTileNeighbours(tile);
+        std::vector<Tile*> validNeighbourTiles;
+        
+        for(const auto& neighbourTile : neighbourTiles){
+            if(distMap.contains(neighbourTile)){  
+                validNeighbourTiles.push_back(neighbourTile);
+            }
+        }
+
+        for(const auto& neighbourTile : validNeighbourTiles){
+            // 1 since map type should affect unit's range
+            if((dist + 1 < distMap.at(neighbourTile))){
+                distMap[neighbourTile] = dist + 1;
+                prioQueue.push(std::pair<Tile*, int>(neighbourTile, distMap.at(neighbourTile)));
+            }
+        }
+    }
+
+    std::vector<Tile*> tileTargets;
+
+    for(const auto& [tilePtr, dist] : distMap){
+        if(tilePtr->getOccupant() != nullptr){
+            if(tilePtr->getOccupant()->getOwnerPtr() != currentPlayerPtr){
+                tileTargets.push_back(tilePtr);
+            }
+        }
+    }
+
+    return tileTargets;
+}

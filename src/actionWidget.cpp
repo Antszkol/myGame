@@ -25,21 +25,21 @@ ActionWidget::ActionWidget(int startingPlayerIdx){
                     emit moveUnitRequested();
                 });
             }
+            if(mode == ActionMode::AttackUnit){
+                connect(itemButton, &QPushButton::clicked, this, [this](){
+                    emit attackUnitRequested();
+                });
+            }
             layout_->addWidget(itemButton);
             i++;
         }
     }
+
     QPushButton* endTurnButton = new QPushButton(QString::fromStdString("End turn"), this);
     this->layout_->addWidget(endTurnButton);
     connect(endTurnButton, &QPushButton::clicked, this, [this](){
             emit endTurnRequested();
         });
-    /*
-    int rowCount = 1 + (i - 1) / 2 + 1;
-    for(int row = 0; row < rowCount; ++row){
-        this->layout_->setRowStretch(row, 1);
-    }
-    */
 }
 
 void ActionWidget::setCurrentPlayerStats(Player* currentPlayerPtr){

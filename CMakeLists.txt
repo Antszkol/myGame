@@ -32,7 +32,6 @@ add_executable(myGame
     src/shopWidget.cpp
     src/unit.cpp
     src/unitWidget.cpp
-    src/footman.cpp
     src/turnHandler.cpp
     src/player.cpp
     src/actionWidget.cpp

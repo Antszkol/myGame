@@ -1,12 +1,16 @@
 #include "player.hpp"
 
-Player::Player(int playerIdx){
+Player::Player(int playerIdx, int startColumn) : startColumn_(startColumn) {
     this->gold_ = 300;   
     this->playerIdx_ = playerIdx;
 }
 
 int Player::getGold(){
     return this->gold_;
+}
+
+const int Player::getPlayerStartColumn(){
+    return this->startColumn_;
 }
 
 int Player::getPlayerIdx(){

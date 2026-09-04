@@ -25,7 +25,7 @@ class ActionWidget : public QWidget {
 
     signals:
         void moveUnitRequested();
-        void attackUnitRequested(UnitType unitType);
+        void attackUnitRequested();
         void endTurnRequested();
         void findPathsRequested();
     };

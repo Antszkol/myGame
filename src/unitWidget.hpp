@@ -14,6 +14,7 @@ class UnitWidget : public QGraphicsRectItem {
         void setCurrentTileWidget(TileWidget* tileWidgetPtr);
         Unit* getUnitPtr();
         void setUnitPtr(Unit* unitPtr);
+        TileWidget* getTileWidgetPtr();
     
     private:
         TileWidget* tileWidgetPtr_;

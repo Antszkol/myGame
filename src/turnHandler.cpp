@@ -3,9 +3,9 @@
 #include "battleWidget.hpp"
 #include "shopWidget.hpp"
 
-TurnHandler::TurnHandler(BattleWidget* battleWidgetPtr, ShopWidget* shopWidgetPtr, ActionWidget* actionWidgetPtr){
-    Player* player1 = new Player(1);
-    Player* player2 = new Player(2); 
+TurnHandler::TurnHandler(BattleWidget* battleWidgetPtr, ShopWidget* shopWidgetPtr, ActionWidget* actionWidgetPtr, int lastMapColumn){
+    Player* player1 = new Player(1, 0);
+    Player* player2 = new Player(2, lastMapColumn); 
     this->actionMode_ = ActionMode::None;
     this->players_ = {player1, player2};
 
@@ -18,22 +18,20 @@ TurnHandler::TurnHandler(BattleWidget* battleWidgetPtr, ShopWidget* shopWidgetPt
     this->isTurnFinished_ = false;
 
     connect(this->shopWidgetPtr_, &ShopWidget::unitPurchaseRequested, this, [this](UnitType unitType){
-            this->recruitUnitSlot(this->currentPlayerPtr_, unitType);});
+            this->recruitUnitSlot(unitType);});
 
     connect(this->actionWidgetPtr_, &ActionWidget::endTurnRequested, this, [this](){
             this->switchPlayerSlot();});
     
     connect(this->actionWidgetPtr_, &ActionWidget::moveUnitRequested, [this](){
             this->moveUnitSlot();});
+    
+    connect(this->actionWidgetPtr_, &ActionWidget::attackUnitRequested, [this](){
+            this->attackUnitSlot();});
 };
 
 Player* TurnHandler::getPlayerPtr(int playerIdx){
-    if(playerIdx == 1){
-        return this->players_.first;
-    }
-    else if(playerIdx == 2){
-        return this->players_.second;
-    }
+    return playerIdx == 1 ? players_.first : players_.second;
 }
 
 void TurnHandler::moveUnit(TileWidget* tileWidgetStart, TileWidget* tileWidgetDest){
@@ -42,6 +40,27 @@ void TurnHandler::moveUnit(TileWidget* tileWidgetStart, TileWidget* tileWidgetDe
     tileWidgetStart->getTilePtr()->setOccupation(nullptr);
     tileWidgetDest->getTilePtr()->setOccupation(unitPtr);
     
+    return;
+}
+
+void TurnHandler::attackUnit(TileWidget* tileWidgetStart, TileWidget* tileWidgetDest){
+    Unit* unitPtr = tileWidgetStart->getTilePtr()->getOccupant();
+    int damage = unitPtr->getUnitStats().damage_;
+
+    if(damage < tileWidgetDest->getTilePtr()->getOccupant()->getRemainingHealth()){
+        tileWidgetDest->getTilePtr()->getOccupant()->dealDamage(damage);
+    }
+    else if(true){
+        Unit* deleteUnitPtr = tileWidgetDest->getTilePtr()->getOccupant();
+        UnitWidget* deleteUnitWidgetPtr = deleteUnitPtr->getUnitWidgetPtr();
+
+        tileWidgetDest->getTilePtr()->setOccupation(nullptr);
+
+        delete deleteUnitPtr;
+        delete deleteUnitWidgetPtr;
+
+        return;
+    }
     return;
 }
 
@@ -67,12 +86,14 @@ void TurnHandler::moveUnitSlot(){
     this->actionMode_ = ActionMode::MoveUnit;
 }
 
-void TurnHandler::recruitUnitSlot(Player* currentPlayerPtr, UnitType unitTypeIdx){
-    if(currentPlayerPtr->getGold() >= 50){
-        this->shopWidgetPtr_->buyUnit(currentPlayerPtr, unitTypeIdx);
+void TurnHandler::attackUnitSlot(){
+    this->actionMode_ = ActionMode::AttackUnit;
+}
+
+void TurnHandler::recruitUnitSlot(UnitType unitTypeIdx){
+    if(currentPlayerPtr_->getGold() >= 50){
+        this->shopWidgetPtr_->buyUnit(currentPlayerPtr_, unitTypeIdx);
         this->pendingUnitType_ = unitTypeIdx;
-        //TileWidget* destinationTileWidgetPtr = this->battleWidgetPtr_->getMapWidgetPtr()->getTileWidgetPtr({0, 0});
-        //UnitWidget* unitWidgetPtr = new UnitWidget(0, destinationTileWidgetPtr);
         this->actionMode_ = ActionMode::RecruitUnit;
     }
 }
@@ -86,18 +107,19 @@ void TurnHandler::switchPlayerSlot(){
     return;
 }
 
-// Trzeba przeniesc stawianie jednostki z recruitUnit() do
-// confirmUnitDeployment(), bo dopiero tam pobieramy
-// odpowiedni TileWidget*.
+Player* TurnHandler::getCurrentPlayerPtr(){
+    return this->currentPlayerPtr_;
+}
 
 void TurnHandler::confirmUnitDeployment(TileWidget* tileWidgetPtr){
     if(this->actionMode_ == ActionMode::RecruitUnit){
         UnitWidget* unitWidgetPtr = new UnitWidget(this->pendingUnitType_, tileWidgetPtr);
-        Unit* unitPtr = new Unit(this->pendingUnitType_, UnitStatsMap.at(this->pendingUnitType_), unitWidgetPtr);
+        Unit* unitPtr = new Unit(this->currentPlayerPtr_, this->pendingUnitType_, UnitStatsMap.at(this->pendingUnitType_), unitWidgetPtr);
         unitWidgetPtr->setUnitPtr(unitPtr);
         tileWidgetPtr->getTilePtr()->setOccupation(unitWidgetPtr->getUnitPtr());
         this->currentPlayerPtr_->addUnit(unitPtr);
         this->actionMode_ = ActionMode::None;
         this->getActionWidgetPtr()->setCurrentPlayerStats(this->currentPlayerPtr_);
     }
+    return;
 }

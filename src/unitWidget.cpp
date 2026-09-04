@@ -18,6 +18,10 @@ void UnitWidget::setUnitPtr(Unit* unitPtr){
     return;
 }
 
+TileWidget* UnitWidget::getTileWidgetPtr(){
+    return this->tileWidgetPtr_;
+}
+
 Unit* UnitWidget::getUnitPtr(){
     return this->unitPtr_;
 }

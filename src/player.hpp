@@ -4,10 +4,11 @@
 
 class Player {
     public:
-        Player(int playerIdx);
+        Player(int playerIdx, int startColumn);
 
         int getGold();
         int getPlayerIdx();
+        const int getPlayerStartColumn();
         void subtractGold(int minus);
 
         void refreshUnitsSpeed();
@@ -17,4 +18,5 @@ class Player {
         std::vector<Unit*> units_;
         int gold_;
         int playerIdx_;
+        const int startColumn_;
 };

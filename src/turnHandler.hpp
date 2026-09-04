@@ -15,21 +15,24 @@ class BattleWidget; // no include because of circular include
 
 class TurnHandler : public QObject {
     public slots:
-        void recruitUnitSlot(Player* currentPlayerPtr, UnitType unitTypeIdx);
+        void recruitUnitSlot(UnitType unitTypeIdx);
+        void attackUnitSlot();
         void moveUnitSlot();
         void switchPlayerSlot();
 
     public:
-        TurnHandler(BattleWidget* battleWidgetPtr, ShopWidget* shopWidgetPtr, ActionWidget* actionWidgetPtr);
+        TurnHandler(BattleWidget* battleWidgetPtr, ShopWidget* shopWidgetPtr, ActionWidget* actionWidgetPtr, int lastMapColumn);
             
         ActionMode getActionMode(){return this->actionMode_;};    
         void moveUnit(TileWidget* tileWidgetStart, TileWidget* tileWidgetDest);
+        void attackUnit(TileWidget* tileWidgetStart, TileWidget* tileWidgetDest);
         void confirmUnitDeployment(TileWidget* tileWidgetPtr);
         void switchPlayer();
         void setActionMode(ActionMode actionMode);
 
         Player* getPlayerPtr(int playerIdx);
         ActionWidget* getActionWidgetPtr();
+        Player* getCurrentPlayerPtr();
 
     private:
         int turnNumber_;

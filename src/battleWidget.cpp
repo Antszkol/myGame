@@ -16,8 +16,6 @@ BattleWidget::BattleWidget(){
     this->layout_ = new QHBoxLayout(this);
     this->setShopWidget();
     this->setActionWidget();
-    this->turnHandlerPtr_ = new TurnHandler(this, this->shopWidgetPtr_, this->actionWidgetPtr_);
-    this->actionWidgetPtr_->setCurrentPlayerStats(this->turnHandlerPtr_->getPlayerPtr(1));
 
     QPushButton* backButton = new QPushButton("Back", actionWidgetPtr_);
     connect(backButton, &QPushButton::clicked, this, [this](){navigateTo(Screen::menuWidget);});
@@ -45,6 +43,9 @@ MapWidget* BattleWidget::getMapWidgetPtr(){
 void BattleWidget::setBattle(Battle* battlePtr, BattleSetting* battleSettingPtr){
     battleSettingPtr_ = battleSettingPtr;
     battlePtr_ = battlePtr;
+    int lastColumn = battlePtr_->getMap()->getMapSize().first - 1;
+    turnHandlerPtr_ = new TurnHandler(this, this->shopWidgetPtr_, this->actionWidgetPtr_, lastColumn);
+    this->actionWidgetPtr_->setCurrentPlayerStats(this->turnHandlerPtr_->getPlayerPtr(1));
     mapWidgetPtr_ = new MapWidget(*battlePtr->getMap(), this->turnHandlerPtr_);
     layout_->insertWidget(1, mapWidgetPtr_, 3);
     return;
