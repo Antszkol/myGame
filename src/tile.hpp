@@ -14,6 +14,7 @@ class Tile{
 
         bool isPassable();
         bool isOccupied();
+        bool isWithinDeploymentZone(Player* playerPtr);
         void setIndex(pair<int, int> index);
 
         pair<int, int> getTileIndex();

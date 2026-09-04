@@ -1,5 +1,6 @@
 #include "tile.hpp"
 #include "tileType.hpp"
+#include "player.hpp"
 
 // tileType_ ustawia sie w konstruktorze, musimy go z
 
@@ -15,6 +16,13 @@ Tile::Tile(pair<int, int> tileIndex, int tileType) :
 void Tile::setOccupation(Unit* occupant){
     this->occupant_ = occupant;
     return;
+}
+
+bool Tile::isWithinDeploymentZone(Player* playerPtr){
+    if(std::abs(this->getTileIndex().first - playerPtr->getPlayerStartColumn()) < 2){
+        return true;
+    }
+    return false;
 }
 
 int Tile::getSpeedImpact() const {

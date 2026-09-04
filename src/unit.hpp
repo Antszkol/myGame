@@ -7,7 +7,7 @@ class Player;
 
 class Unit {
     public:
-        Unit(const Player* owner, const UnitType& unitType, const UnitStats& unitStats, UnitWidget* const unitWidgetPtr);
+        Unit(const Player* owner, const UnitType& unitType, const UnitStats& unitStats);
 
         UnitStats getUnitStats() const;
         int getUnitType() const;
@@ -17,6 +17,7 @@ class Unit {
         int getHealth();
         void subtractSpeed(int subtract);
         void setRemainingSpeed(int speed);
+        void setUnitWidgetPtr(UnitWidget* unitWidgetPtr);
         void dealDamage(int damage);
         const Player* getOwnerPtr();
 

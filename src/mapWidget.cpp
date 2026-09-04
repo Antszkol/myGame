@@ -56,8 +56,8 @@ void MapWidget::onTileHovered(TileWidget* tileWidgetPtr){
         return;
     }
     else if(this->turnHandlerPtr_->getActionMode() == ActionMode::RecruitUnit){
-        if(tileWidgetPtr->getTilePtr()->isPassable() && 
-            std::abs(tileWidgetPtr->getTilePtr()->getTileIndex().first - this->turnHandlerPtr_->getCurrentPlayerPtr()->getPlayerStartColumn()) < 2){
+        if(tileWidgetPtr->getTilePtr()->isPassable()
+        && tileWidgetPtr->getTilePtr()->isWithinDeploymentZone(this->turnHandlerPtr_->getCurrentPlayerPtr())){
             tileWidgetPtr->setBrush(QBrush(Qt::green, Qt::SolidPattern));
         }
         else{
@@ -87,8 +87,6 @@ void MapWidget::onTileLeft(TileWidget* tileWidgetPtr){
     return;
 }
 
-//onTileLeft musi przywracac oryginalny kolor kazdemu tilke ookolorowanemu wczesniej na zielono
-
 Map* MapWidget::getMapPtr() const {
     return this->map;
 }
@@ -100,15 +98,16 @@ void MapWidget::onTileClicked(TileWidget* tileWidgetPtr){
         }
     }
 
-    // klikam w tile, zaznaczony jest na czerwono (bo unit juz sie ruszyl)
-    // end turn, ale tile z unitem nadal na czerwono
-    // kolejna moja tura, tile nadal na czerwono, musze kliknac jeszcze raz move unit zeby sie podswietlily opcje na zielono
-
     // MOVE UNIT
     if(this->turnHandlerPtr_->getActionMode() == ActionMode::MoveUnit){
         // MoveUnit : second click (unitSelected_ set)
-        if(this->unitSelected_ != nullptr && tileWidgetPtr->getTilePtr()->isPassable() && this->tilesSelectedMap_.contains(tileWidgetPtr->getTilePtr())){
-            this->unitSelected_->subtractSpeed(this->tilesSelectedMap_.at(tileWidgetPtr->getTilePtr())); // tutaj odejmij speed z mapy
+        if(this->unitSelected_ != nullptr && tileWidgetPtr->getTilePtr() == tileSet_){
+            this->removeTileSelection();
+            this->unitSelected_ = nullptr;
+            this->tileSet_ = nullptr;
+        }
+        else if(this->unitSelected_ != nullptr && tileWidgetPtr->getTilePtr()->isPassable() && this->tilesSelectedMap_.contains(tileWidgetPtr->getTilePtr())){
+            this->unitSelected_->subtractSpeed(this->tilesSelectedMap_.at(tileWidgetPtr->getTilePtr()));
             this->turnHandlerPtr_->setActionMode(ActionMode::None);
             this->turnHandlerPtr_->moveUnit(this->tileSet_->getTileWidgetPtr(), tileWidgetPtr);
             this->removeTileSelection();
@@ -139,9 +138,16 @@ void MapWidget::onTileClicked(TileWidget* tileWidgetPtr){
         }
     }
 
+    // ATTACK UNIT
     if(this->turnHandlerPtr_->getActionMode() == ActionMode::AttackUnit){
         // second click
-        if(this->unitSelected_ != nullptr && std::find(this->targetTileVector_.begin(), this->targetTileVector_.end(), tileWidgetPtr->getTilePtr()) != this->targetTileVector_.end()){
+        if(this->unitSelected_ != nullptr && tileWidgetPtr->getTilePtr() == tileSet_){
+            this->removeTargetSelection();
+            this->unitSelected_ = nullptr;
+            this->tileSet_ = nullptr;
+        }
+        else if(this->unitSelected_ != nullptr 
+            && std::find(this->targetTileVector_.begin(), this->targetTileVector_.end(), tileWidgetPtr->getTilePtr()) != this->targetTileVector_.end()){
             this->turnHandlerPtr_->setActionMode(ActionMode::None);
             this->turnHandlerPtr_->attackUnit(this->tileSet_->getTileWidgetPtr(), tileWidgetPtr);
             this->removeTargetSelection();

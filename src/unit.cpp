@@ -1,10 +1,9 @@
 #include "unit.hpp"
 #include "player.hpp"
 
-Unit::Unit(const Player* owner, const UnitType& unitType, const UnitStats& unitStats, UnitWidget* const unitWidgetPtr) : 
+Unit::Unit(const Player* owner, const UnitType& unitType, const UnitStats& unitStats) : 
     ownerPtr_(owner),
     unitStats_(unitStats),
-    unitWidgetPtr_(unitWidgetPtr),
     unitType_(unitType)
 {
     this->remainingSpeed_ = this->unitStats_.speed_;
@@ -13,6 +12,11 @@ Unit::Unit(const Player* owner, const UnitType& unitType, const UnitStats& unitS
 
 UnitStats Unit::getUnitStats() const {
     return this->unitStats_;
+}
+
+void Unit::setUnitWidgetPtr(UnitWidget* unitWidgetPtr){
+    this->unitWidgetPtr_ = unitWidgetPtr;
+    return;
 }
 
 UnitWidget* Unit::getUnitWidgetPtr() const {

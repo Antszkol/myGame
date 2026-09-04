@@ -49,14 +49,17 @@ void TurnHandler::attackUnit(TileWidget* tileWidgetStart, TileWidget* tileWidget
 
     if(damage < tileWidgetDest->getTilePtr()->getOccupant()->getRemainingHealth()){
         tileWidgetDest->getTilePtr()->getOccupant()->dealDamage(damage);
+        tileWidgetDest->getTilePtr()->getOccupant()->getUnitWidgetPtr()->updateHealthLabel();
     }
     else if(true){
         Unit* deleteUnitPtr = tileWidgetDest->getTilePtr()->getOccupant();
         UnitWidget* deleteUnitWidgetPtr = deleteUnitPtr->getUnitWidgetPtr();
+        QGraphicsSimpleTextItem* deleteHealthLabelPtr = deleteUnitWidgetPtr->getHealthLabelPtr();
 
         tileWidgetDest->getTilePtr()->setOccupation(nullptr);
 
         delete deleteUnitPtr;
+        delete deleteHealthLabelPtr;
         delete deleteUnitWidgetPtr;
 
         return;
@@ -91,7 +94,7 @@ void TurnHandler::attackUnitSlot(){
 }
 
 void TurnHandler::recruitUnitSlot(UnitType unitTypeIdx){
-    if(currentPlayerPtr_->getGold() >= 50){
+    if(currentPlayerPtr_->getGold() >= UnitStatsMap.at(unitTypeIdx).cost_){
         this->shopWidgetPtr_->buyUnit(currentPlayerPtr_, unitTypeIdx);
         this->pendingUnitType_ = unitTypeIdx;
         this->actionMode_ = ActionMode::RecruitUnit;
@@ -113,11 +116,10 @@ Player* TurnHandler::getCurrentPlayerPtr(){
 
 void TurnHandler::confirmUnitDeployment(TileWidget* tileWidgetPtr){
     if(this->actionMode_ == ActionMode::RecruitUnit){
-        UnitWidget* unitWidgetPtr = new UnitWidget(this->pendingUnitType_, tileWidgetPtr);
-        Unit* unitPtr = new Unit(this->currentPlayerPtr_, this->pendingUnitType_, UnitStatsMap.at(this->pendingUnitType_), unitWidgetPtr);
-        unitWidgetPtr->setUnitPtr(unitPtr);
+        UnitWidget* unitWidgetPtr = new UnitWidget(this->pendingUnitType_, tileWidgetPtr, new Unit(this->currentPlayerPtr_, this->pendingUnitType_, UnitStatsMap.at(this->pendingUnitType_)));
+        unitWidgetPtr->getUnitPtr()->setUnitWidgetPtr(unitWidgetPtr);
         tileWidgetPtr->getTilePtr()->setOccupation(unitWidgetPtr->getUnitPtr());
-        this->currentPlayerPtr_->addUnit(unitPtr);
+        this->currentPlayerPtr_->addUnit(unitWidgetPtr->getUnitPtr());
         this->actionMode_ = ActionMode::None;
         this->getActionWidgetPtr()->setCurrentPlayerStats(this->currentPlayerPtr_);
     }
