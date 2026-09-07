@@ -15,6 +15,7 @@ class Map{
         Tile* getTileByIndex(pair<int, int> argTileIndex) const;
         vector<Tile*> getMapTiles();
         vector<Tile*> getTileNeighbours(Tile* baseTile);
+        vector<Tile*> getTileSurrounding(Tile* baseTile);
 
     private:
         void loadMap();

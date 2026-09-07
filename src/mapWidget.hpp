@@ -29,6 +29,7 @@ class MapWidget : public QGraphicsView {
         void removeAllSelection();
 
         Map* getMapPtr() const;
+        MapHandler* getMapHandlerPtr() const;
 
         QPainter painter_;
         QBrush brush_;

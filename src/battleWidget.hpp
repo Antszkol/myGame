@@ -16,6 +16,7 @@ class BattleWidget : public BaseScreenWidget{
     Q_OBJECT
     public slots:
         void setBattle(Battle* battlePtr, BattleSetting* battleSettingPtr);
+        void battleEnded(const Player* winnerPtr);
 
     public:
         BattleWidget();

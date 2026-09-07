@@ -19,3 +19,7 @@ std::string Logger::getLastMessageText() const{
     }
     return this->messages_.back()->describe();
 }
+
+const std::vector<std::unique_ptr<Message>>& Logger::getMessages() const{
+    return this->messages_;
+}

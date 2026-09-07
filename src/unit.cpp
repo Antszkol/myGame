@@ -40,6 +40,11 @@ void Unit::setHasAttacked(bool hasAttacked){
     return;
 }
 
+void Unit::setMorale(int morale){
+    this->morale_ = morale;
+    return;
+}
+
 UnitStats Unit::getUnitStats() const {
     return this->unitStats_;
 }

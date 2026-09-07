@@ -32,11 +32,21 @@ UnitWidget::UnitWidget(UnitType unitType, TileWidget* destinationTileWidgetPtr, 
     healthLabelPtr_->setText(QString::number(this->unitPtr_->getHealth()));
     healthLabelPtr_->setPos(5, 5);
 
+    this->moraleLabelPtr_ = new QGraphicsSimpleTextItem(this);
+    moraleLabelPtr_->setText(QString::number(50));
+    moraleLabelPtr_->setPos(scaleFactor - moraleLabelPtr_->boundingRect().width() - 5, 5);
+
     this->setCurrentTileWidget(destinationTileWidgetPtr);
 }
 
 void UnitWidget::updateHealthLabel(){
     this->healthLabelPtr_->setText(QString::number(this->unitPtr_->getHealth()));
+    return;
+}
+
+void UnitWidget::updateMoraleLabel(int morale){
+    this->moraleLabelPtr_->setText(QString::number(morale));
+    this->moraleLabelPtr_->setPos(80 - this->moraleLabelPtr_->boundingRect().width() - 5, 5);
     return;
 }
 
@@ -83,4 +93,8 @@ Unit* UnitWidget::getUnitPtr() const {
 
 QGraphicsSimpleTextItem* UnitWidget::getHealthLabelPtr(){
     return this->healthLabelPtr_;
+};
+
+QGraphicsSimpleTextItem* UnitWidget::getMoraleLabelPtr(){
+    return this->moraleLabelPtr_;
 };

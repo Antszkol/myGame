@@ -8,6 +8,7 @@
 #include "mapWidget.hpp"
 #include "baseScreenWidget.hpp"
 #include "battleWidget.hpp"
+#include "resultWidget.hpp"
 
 BattleWidget::BattleWidget(){
     QFont font("Garamond", 16);
@@ -17,19 +18,34 @@ BattleWidget::BattleWidget(){
     this->setShopWidget();
     this->setActionWidget();
 
-    QPushButton* backButton = new QPushButton("Back", actionWidgetPtr_);
-    connect(backButton, &QPushButton::clicked, this, [this](){
+    QPushButton* quitBattleButton = new QPushButton("Quit battle", actionWidgetPtr_);
+    connect(quitBattleButton, &QPushButton::clicked, this, [this](){
         MapWidget* deleteMapWidgetPtr = this->mapWidgetPtr_;
         delete deleteMapWidgetPtr;
         this->mapWidgetPtr_ = nullptr;
         navigateTo(Screen::menuWidget);});
-    this->actionWidgetPtr_->layout_->addWidget(backButton);
+    this->actionWidgetPtr_->layout_->addWidget(quitBattleButton);
 }
 
 BattleWidget::~BattleWidget(){
     MapWidget* deleteMapWidgetPtr = this->mapWidgetPtr_;
     delete deleteMapWidgetPtr;
 }
+
+void BattleWidget::battleEnded(const Player* winnerPtr){
+    Player* player1Ptr = this->turnHandlerPtr_->getPlayerPtr(1);
+    Player* player2Ptr = this->turnHandlerPtr_->getPlayerPtr(2);
+
+    std::vector<Message*> messagePtrVector;
+    for(const auto& messagePtr : this->turnHandlerPtr_->getLoggerPtr()->getMessages()){
+        messagePtrVector.push_back(messagePtr.get());
+    }
+
+    ResultWidget resultWidget(winnerPtr->getPlayerIdx(), player1Ptr->getPlayerStats(), player2Ptr->getPlayerStats(), messagePtrVector, this);
+    resultWidget.exec();
+    this->navigateTo(Screen::menuWidget);
+}
+
 
 void BattleWidget::setShopWidget(){
     shopWidgetPtr_ = new ShopWidget();
@@ -48,6 +64,7 @@ void BattleWidget::setBattle(Battle* battlePtr, BattleSetting* battleSettingPtr)
     battlePtr_ = battlePtr;
     int lastColumn = battlePtr_->getMap()->getMapSize().first - 1;
     turnHandlerPtr_ = std::make_unique<TurnHandler>(this, this->shopWidgetPtr_, this->actionWidgetPtr_, lastColumn);
+    connect(this->turnHandlerPtr_.get(), &TurnHandler::battleEnded, this, &BattleWidget::battleEnded);
     this->actionWidgetPtr_->setCurrentPlayerStats(this->turnHandlerPtr_->getPlayerPtr(1));
     if(this->mapWidgetPtr_ == nullptr){
         mapWidgetPtr_ = new MapWidget(*battlePtr->getMap(), this->turnHandlerPtr_.get());
@@ -55,13 +72,6 @@ void BattleWidget::setBattle(Battle* battlePtr, BattleSetting* battleSettingPtr)
     layout_->insertWidget(1, mapWidgetPtr_, 3);
     return;
 }
-
-//problem:
-//
-//BattleWidget::setBattle() tworzy nowy TurnHandler i MapWidget
-//trzeba usunac manualnie MapWidget
-//i unique_ptr dac na TurnHandler
-
 
 MapWidget* BattleWidget::getMapWidgetPtr(){
     return this->mapWidgetPtr_;

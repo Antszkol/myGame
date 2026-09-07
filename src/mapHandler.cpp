@@ -1,10 +1,36 @@
 #include "mapHandler.hpp"
 #include "map.hpp"
 
-MapHandler::MapHandler(Map& map){
+MapHandler::MapHandler(Map& map) : map_(map){
     this->finder_ = new Finder(map);
     this->tileSet_ = nullptr;
     this->unitSelected_ = nullptr;
+}
+
+int MapHandler::calculateMorale(Unit* unitPtr, Tile* tilePtr){
+    std::vector<Tile*> surroundingTilesPtr = this->map_.getTileSurrounding(tilePtr);
+    
+    int moraleSum = 50;
+
+    for(auto const& tilePointer : surroundingTilesPtr){
+        if(tilePointer->getOccupant() != nullptr){
+            if(tilePointer->getOccupant()->getOwnerPtr() == unitPtr->getOwnerPtr()){
+                moraleSum = moraleSum + 8;
+                
+            }
+            if(tilePointer->getOccupant()->getOwnerPtr() != unitPtr->getOwnerPtr()){
+                moraleSum = moraleSum - 8;
+            }
+        }
+    }
+
+    int tileType = unitPtr->getUnitWidgetPtr()->getTileWidgetPtr()->getTilePtr()->getTileType();
+
+    if(tileType == TileType::mud){
+        moraleSum = moraleSum - 20;
+    }
+
+    return moraleSum;
 }
 
 void MapHandler::addTileWidget(TileWidget* tileWidgetPtr){

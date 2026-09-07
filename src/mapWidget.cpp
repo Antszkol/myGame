@@ -177,3 +177,7 @@ void MapWidget::removeAllSelection(){
 Map* MapWidget::getMapPtr() const {
     return this->map_;
 }
+
+MapHandler* MapWidget::getMapHandlerPtr() const {
+    return this->mapHandler_;
+}

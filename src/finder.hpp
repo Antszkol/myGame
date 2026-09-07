@@ -1,5 +1,6 @@
 #include <queue>
 #include <map>
+#include "tileType.hpp"
 #include "tile.hpp"
 #include "map.hpp"
 #include "unitStats.hpp"
@@ -11,6 +12,7 @@ class Finder{
 
         std::map<Tile*, int> findMovePaths(Tile* startingTile, int speed);
         std::vector<Tile*> FindTargets(Tile* startingTilePtr, int range, Player* currentPlayerPtr);
+        int calculateMorale(Unit* unitPtr, Tile* tilePtr);
 
     private:
         Map& map_;

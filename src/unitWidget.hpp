@@ -13,6 +13,7 @@ class UnitWidget : public QGraphicsPixmapItem {
         UnitWidget(UnitType unitType, TileWidget* destinationTileWidgetPtr, Unit* unitPtr);
 
         void updateHealthLabel();
+        void updateMoraleLabel(int morale);
 
         void setDeadPixmap();
         void setCurrentTileWidget(TileWidget* tileWidgetPtr);
@@ -20,10 +21,12 @@ class UnitWidget : public QGraphicsPixmapItem {
 
         Unit* getUnitPtr() const;
         QGraphicsSimpleTextItem* getHealthLabelPtr();
+        QGraphicsSimpleTextItem* getMoraleLabelPtr();
         TileWidget* getTileWidgetPtr();
 
     private:
         TileWidget* tileWidgetPtr_;
         Unit* unitPtr_;
         QGraphicsSimpleTextItem* healthLabelPtr_;
+        QGraphicsSimpleTextItem* moraleLabelPtr_;
     };

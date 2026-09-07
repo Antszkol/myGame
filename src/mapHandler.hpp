@@ -19,6 +19,7 @@ class MapHandler {
         std::map<Tile*, int> findMovePaths(Tile* startingTile, int speed);
         std::vector<Tile*> findTargets(Tile* startingTilePtr, int range, Player* currentPlayerPtr);
 
+        int calculateMorale(Unit* unitPtr, Tile* tilePtr);
         void unsetTileOccupant(TileWidget* tileWidgetPtr);
         void addTileSelection(Tile* tilePtr, int distance);
         void addTargetSelection(Tile* tilePtr);
@@ -43,6 +44,7 @@ class MapHandler {
 
         Tile* tileSet_;
         Unit* unitSelected_;
+        Map& map_;
         std::map<Tile*, int> tilesSelectedMap_;
         std::vector<Tile*> targetTileVector_;
 };

@@ -46,6 +46,12 @@ void TurnHandler::moveUnit(TileWidget* tileWidgetStart, TileWidget* tileWidgetDe
     this->logger_.addMessage(std::make_unique<MoveMessage>(unitPtr->getOwnerPtr()->getPlayerIdx(), unitPtr->getUnitType(), tileWidgetStart->getTilePtr()->getTileIndex(), tileWidgetDest->getTilePtr()->getTileIndex()));
     this->actionWidgetPtr_->setLastMessage(this->logger_.getLastMessageText());
 
+    if(tileWidgetDest->getTilePtr()->isWithinDeploymentZone(this->getNotCurrentPlayerPtr())){
+        emit battleEnded(unitPtr->getOwnerPtr());
+    }
+
+    this->refreshUnitMorale();
+
     return;
 }
 
@@ -56,6 +62,11 @@ void TurnHandler::attackUnit(TileWidget* tileWidgetStart, TileWidget* tileWidget
     static std::mt19937 randomEngine(std::random_device{}());
     static std::uniform_int_distribution<int> luckDamageDistribution(0, 10);
     int damage = unitPtr->getUnitStats().damage_ + luckDamageDistribution(randomEngine);
+
+    MapHandler* mapHandlerPtr = this->battleWidgetPtr_->getMapWidgetPtr()->getMapHandlerPtr();
+    int attackerMorale = mapHandlerPtr->calculateMorale(unitPtr, tileWidgetStart->getTilePtr());
+    double moraleMultiplier = 1.0 - (50.0 - attackerMorale) / 100.0;
+    damage = static_cast<int>(damage * moraleMultiplier);
 
     Unit* defenderUnitPtr = tileWidgetDest->getTilePtr()->getOccupant();
     int attackerPlayerIdx = unitPtr->getOwnerPtr()->getPlayerIdx();
@@ -69,12 +80,21 @@ void TurnHandler::attackUnit(TileWidget* tileWidgetStart, TileWidget* tileWidget
     if(damage < tileWidgetDest->getTilePtr()->getOccupant()->getRemainingHealth()){
         tileWidgetDest->getTilePtr()->getOccupant()->dealDamage(damage);
         tileWidgetDest->getTilePtr()->getOccupant()->getUnitWidgetPtr()->updateHealthLabel();
+
+        int damageDiff = std::abs(damage - tileWidgetDest->getTilePtr()->getOccupant()->getRemainingHealth());
+
+        this->getCurrentPlayerPtr()->addDamageDealt(damageDiff);
+        this->getNotCurrentPlayerPtr()->addDamageReceived(damageDiff);
+
+        this->refreshUnitMorale();
     }
     else if(true){
         Unit* deleteUnitPtr = tileWidgetDest->getTilePtr()->getOccupant();
         UnitWidget* deleteUnitWidgetPtr = deleteUnitPtr->getUnitWidgetPtr();
         QGraphicsSimpleTextItem* deleteHealthLabelPtr = deleteUnitWidgetPtr->getHealthLabelPtr();
+        QGraphicsSimpleTextItem* deleteMoraleLabelPtr = deleteUnitWidgetPtr->getMoraleLabelPtr();
         delete deleteHealthLabelPtr;
+        delete deleteMoraleLabelPtr;
 
         tileWidgetDest->getTilePtr()->setOccupation(nullptr);
 
@@ -82,8 +102,14 @@ void TurnHandler::attackUnit(TileWidget* tileWidgetStart, TileWidget* tileWidget
 
         this->logger_.addMessage(std::make_unique<KillMessage>(attackerPlayerIdx, unitPtr->getUnitType(), defenderPlayerIdx, defenderUnitType, targetIndex));
         this->actionWidgetPtr_->setLastMessage(this->logger_.getLastMessageText());
+        
+        this->getCurrentPlayerPtr()->addFrag();
+        this->getNotCurrentPlayerPtr()->addCasualty();
+        this->getNotCurrentPlayerPtr()->removeUnit(deleteUnitPtr);
 
-        QTimer::singleShot(700, [deleteUnitPtr, deleteUnitWidgetPtr, tileWidgetDest](){
+        this->refreshUnitMorale();
+
+        QTimer::singleShot(800, [deleteUnitPtr, deleteUnitWidgetPtr, tileWidgetDest](){
             delete deleteUnitPtr;
             delete deleteUnitWidgetPtr;
         });
@@ -140,6 +166,8 @@ void TurnHandler::confirmUnitDeployment(TileWidget* tileWidgetPtr){
 
         this->logger_.addMessage(std::make_unique<RecruitMessage>(this->currentPlayerPtr_->getPlayerIdx(), this->pendingUnitType_, tileWidgetPtr->getTilePtr()->getTileIndex()));
         this->actionWidgetPtr_->setLastMessage(this->logger_.getLastMessageText());
+
+        this->refreshUnitMorale();
     }
     return;
 }
@@ -161,6 +189,28 @@ Player* TurnHandler::getCurrentPlayerPtr(){
     return this->currentPlayerPtr_;
 }
 
+Player* TurnHandler::getNotCurrentPlayerPtr(){
+    if(this->getCurrentPlayerPtr()->getPlayerIdx() == 1){
+        return this->getPlayerPtr(2);
+    }
+    else{
+        return this->getPlayerPtr(1);
+    }
+}
+
 Logger* TurnHandler::getLoggerPtr(){
     return &this->logger_;
+}
+
+void TurnHandler::refreshUnitMorale(){
+    MapHandler* mapHandlerPtr = this->battleWidgetPtr_->getMapWidgetPtr()->getMapHandlerPtr();
+
+    for(Player* playerPtr : {this->players_.first, this->players_.second}){
+        for(Unit* unitPtr : playerPtr->getUnits()){
+            Tile* tilePtr = unitPtr->getUnitWidgetPtr()->getTileWidgetPtr()->getTilePtr();
+            int morale = mapHandlerPtr->calculateMorale(unitPtr, tilePtr);
+            unitPtr->getUnitWidgetPtr()->updateMoraleLabel(morale);
+        }
+    }
+    return;
 }

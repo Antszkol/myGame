@@ -10,6 +10,7 @@ class Logger {
         void printAllMessages() const;
 
         std::string getLastMessageText() const;
+        const std::vector<std::unique_ptr<Message>>& getMessages() const;
 
     private:
         std::vector<std::unique_ptr<Message>> messages_;

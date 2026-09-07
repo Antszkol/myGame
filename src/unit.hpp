@@ -16,6 +16,7 @@ class Unit {
         void setRemainingSpeed(int speed);
         void setUnitWidgetPtr(UnitWidget* unitWidgetPtr);
         void setHasAttacked(bool hasAttacked);
+        void setMorale(int morale);
 
         UnitStats getUnitStats() const;
         UnitType getUnitType() const;
@@ -33,4 +34,5 @@ class Unit {
         UnitWidget* unitWidgetPtr_;
         const Player* ownerPtr_;
         const UnitStats unitStats_;
+        int morale_ = 0;
 };

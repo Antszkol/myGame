@@ -44,6 +44,27 @@ vector<Tile*> Map::getTileNeighbours(Tile* baseTilePtr){
     return neighbourTiles;
 }
 
+vector<Tile*> Map::getTileSurrounding(Tile* baseTilePtr){
+    std::vector<Tile*> neighbourTiles;
+    for(const auto& neighbourTilePtr : this->mapTiles_){
+        pair<int, int> baseTileIdx = baseTilePtr->getTileIndex();
+        pair<int, int> neighbourTileIdx = neighbourTilePtr->getTileIndex();
+        bool isSurrounding;
+
+        if((std::abs(neighbourTileIdx.first - baseTileIdx.first) == 1 && (std::abs(neighbourTileIdx.second - baseTileIdx.second) == 1))){
+            isSurrounding = true;
+        }
+        else{
+            isSurrounding = false;
+        }
+
+        if(isSurrounding){
+            neighbourTiles.push_back(neighbourTilePtr);
+        }
+    }
+    return neighbourTiles;
+}
+
 Tile* Map::getTileByIndex(pair<int, int> argTileIndex) const {
     return this->mapTiles_[argTileIndex.first * this->getMapSize().first + argTileIndex.second];
 }
