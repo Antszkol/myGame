@@ -13,7 +13,6 @@ MapWidget::MapWidget(Map& argMap, TurnHandler* turnHandlerPtr){
     this->turnHandlerPtr_ = turnHandlerPtr;
     this->mapHandler_ = new MapHandler(*(this->map_));
 
-    // mapWidget musi, dla tworzenia tiles, miec wskaznik do tile (dla tileWidget)
     for(int i = 0; i < argMap.getMapSize().first * argMap.getMapSize().second; i++){
         int x = i % argMap.getMapSize().first;
         int y = i / argMap.getMapSize().first;

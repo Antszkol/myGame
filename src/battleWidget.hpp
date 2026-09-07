@@ -27,11 +27,11 @@ class BattleWidget : public BaseScreenWidget{
 
     private:
         QHBoxLayout* layout_;
-        MapWidget* mapWidgetPtr_;
+        MapWidget* mapWidgetPtr_ = nullptr;
         BattleSetting* battleSettingPtr_;
         ShopWidget* shopWidgetPtr_;
         ActionWidget* actionWidgetPtr_;
-        TurnHandler* turnHandlerPtr_;
+        std::unique_ptr<TurnHandler> turnHandlerPtr_;
         Battle* battlePtr_;
         QLabel* goldLabel_;
 };

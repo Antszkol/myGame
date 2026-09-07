@@ -13,6 +13,10 @@ ActionWidget::ActionWidget(int startingPlayerIdx){
     this->currentPlayerGoldLabel_ = new QLabel(this);
     this->layout_->addWidget(currentPlayerGoldLabel_);
 
+    this->combatLogLabel_ = new QLabel(this);
+    this->combatLogLabel_->setWordWrap(true);
+    this->layout_->addWidget(combatLogLabel_);
+
     QLabel* actionLabel = new QLabel("ACTIONS", this);
     this->layout_->addWidget(actionLabel);
 
@@ -47,5 +51,10 @@ void ActionWidget::setCurrentPlayerStats(Player* currentPlayerPtr){
     this->currentPlayerLabel_->setText(QString("Current player: %1").arg(this->currentPlayerIdx_));
     this->currentPlayerGold_ = currentPlayerPtr->getGold();
     this->currentPlayerGoldLabel_->setText(QString("Gold: %1").arg(this->currentPlayerGold_));
+    return;
+}
+
+void ActionWidget::setLastMessage(const std::string& messageText){
+    this->combatLogLabel_->setText(QString::fromStdString(messageText));
     return;
 }

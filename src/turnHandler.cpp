@@ -3,6 +3,12 @@
 #include "battleWidget.hpp"
 #include "shopWidget.hpp"
 #include <QTimer>
+#include <random>
+#include <memory>
+#include "moveMessage.hpp"
+#include "attackMessage.hpp"
+#include "killMessage.hpp"
+#include "recruitMessage.hpp"
 
 TurnHandler::TurnHandler(BattleWidget* battleWidgetPtr, ShopWidget* shopWidgetPtr, ActionWidget* actionWidgetPtr, int lastMapColumn){
     Player* player1 = new Player(1, 0);
@@ -37,13 +43,28 @@ void TurnHandler::moveUnit(TileWidget* tileWidgetStart, TileWidget* tileWidgetDe
     tileWidgetStart->getTilePtr()->setOccupation(nullptr);
     tileWidgetDest->getTilePtr()->setOccupation(unitPtr);
 
+    this->logger_.addMessage(std::make_unique<MoveMessage>(unitPtr->getOwnerPtr()->getPlayerIdx(), unitPtr->getUnitType(), tileWidgetStart->getTilePtr()->getTileIndex(), tileWidgetDest->getTilePtr()->getTileIndex()));
+    this->actionWidgetPtr_->setLastMessage(this->logger_.getLastMessageText());
+
     return;
 }
 
 void TurnHandler::attackUnit(TileWidget* tileWidgetStart, TileWidget* tileWidgetDest){
     Unit* unitPtr = tileWidgetStart->getTilePtr()->getOccupant();
     unitPtr->setHasAttacked(true);
-    int damage = unitPtr->getUnitStats().damage_;
+
+    static std::mt19937 randomEngine(std::random_device{}());
+    static std::uniform_int_distribution<int> luckDamageDistribution(0, 10);
+    int damage = unitPtr->getUnitStats().damage_ + luckDamageDistribution(randomEngine);
+
+    Unit* defenderUnitPtr = tileWidgetDest->getTilePtr()->getOccupant();
+    int attackerPlayerIdx = unitPtr->getOwnerPtr()->getPlayerIdx();
+    int defenderPlayerIdx = defenderUnitPtr->getOwnerPtr()->getPlayerIdx();
+    UnitType defenderUnitType = defenderUnitPtr->getUnitType();
+    std::pair<int, int> targetIndex = tileWidgetDest->getTilePtr()->getTileIndex();
+
+    this->logger_.addMessage(std::make_unique<AttackMessage>(attackerPlayerIdx, unitPtr->getUnitType(), defenderPlayerIdx, defenderUnitType, damage, targetIndex));
+    this->actionWidgetPtr_->setLastMessage(this->logger_.getLastMessageText());
 
     if(damage < tileWidgetDest->getTilePtr()->getOccupant()->getRemainingHealth()){
         tileWidgetDest->getTilePtr()->getOccupant()->dealDamage(damage);
@@ -57,7 +78,10 @@ void TurnHandler::attackUnit(TileWidget* tileWidgetStart, TileWidget* tileWidget
 
         tileWidgetDest->getTilePtr()->setOccupation(nullptr);
 
-        deleteUnitWidgetPtr->setDeadPixmap(); // czy jak tam nazwiesz tę metodę setPixmap
+        deleteUnitWidgetPtr->setDeadPixmap();
+
+        this->logger_.addMessage(std::make_unique<KillMessage>(attackerPlayerIdx, unitPtr->getUnitType(), defenderPlayerIdx, defenderUnitType, targetIndex));
+        this->actionWidgetPtr_->setLastMessage(this->logger_.getLastMessageText());
 
         QTimer::singleShot(700, [deleteUnitPtr, deleteUnitWidgetPtr, tileWidgetDest](){
             delete deleteUnitPtr;
@@ -113,6 +137,9 @@ void TurnHandler::confirmUnitDeployment(TileWidget* tileWidgetPtr){
         this->currentPlayerPtr_->addUnit(unitWidgetPtr->getUnitPtr());
         this->actionMode_ = ActionMode::None;
         this->getActionWidgetPtr()->setCurrentPlayerStats(this->currentPlayerPtr_);
+
+        this->logger_.addMessage(std::make_unique<RecruitMessage>(this->currentPlayerPtr_->getPlayerIdx(), this->pendingUnitType_, tileWidgetPtr->getTilePtr()->getTileIndex()));
+        this->actionWidgetPtr_->setLastMessage(this->logger_.getLastMessageText());
     }
     return;
 }
@@ -132,4 +159,8 @@ ActionWidget* TurnHandler::getActionWidgetPtr(){
 
 Player* TurnHandler::getCurrentPlayerPtr(){
     return this->currentPlayerPtr_;
+}
+
+Logger* TurnHandler::getLoggerPtr(){
+    return &this->logger_;
 }

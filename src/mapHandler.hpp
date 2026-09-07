@@ -19,7 +19,7 @@ class MapHandler {
         std::map<Tile*, int> findMovePaths(Tile* startingTile, int speed);
         std::vector<Tile*> findTargets(Tile* startingTilePtr, int range, Player* currentPlayerPtr);
 
-        void unsetUnit(TileWidget* tileWidgetPtr);
+        void unsetTileOccupant(TileWidget* tileWidgetPtr);
         void addTileSelection(Tile* tilePtr, int distance);
         void addTargetSelection(Tile* tilePtr);
         void clearTileSelection();

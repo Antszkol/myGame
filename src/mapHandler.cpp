@@ -20,7 +20,7 @@ std::vector<Tile*> MapHandler::findTargets(Tile* startingTilePtr, int range, Pla
     return this->finder_->FindTargets(startingTilePtr, range, currentPlayerPtr);
 }
 
-void MapHandler::unsetUnit(TileWidget* tileWidgetPtr){
+void MapHandler::unsetTileOccupant(TileWidget* tileWidgetPtr){
     tileWidgetPtr->getTilePtr()->setOccupation(nullptr);
     return;
 }

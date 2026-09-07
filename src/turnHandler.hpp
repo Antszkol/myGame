@@ -10,6 +10,7 @@
 #include "unitStats.hpp"
 #include "unitType.hpp"
 #include "unitWidget.hpp"
+#include "logger.hpp"
 
 class BattleWidget; // no include because of circular include
 
@@ -34,6 +35,7 @@ class TurnHandler : public QObject {
         Player* getPlayerPtr(int playerIdx);
         ActionWidget* getActionWidgetPtr();
         Player* getCurrentPlayerPtr();
+        Logger* getLoggerPtr();
 
     private:
         int turnNumber_;
@@ -46,4 +48,5 @@ class TurnHandler : public QObject {
         ActionWidget* actionWidgetPtr_;
         ActionMode actionMode_;
         UnitType pendingUnitType_;
+        Logger logger_;
 };

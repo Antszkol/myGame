@@ -2,6 +2,7 @@
 #include <QWidget>
 #include <QVBoxLayout>
 #include <QLabel>
+#include <string>
 
 #include "unitType.hpp"
 #include "player.hpp"
@@ -14,12 +15,14 @@ class ActionWidget : public QWidget {
         ActionWidget(int startingPlayerIdx = 1);
 
         void setCurrentPlayerStats(Player* currentPlayerPtr);
+        void setLastMessage(const std::string& messageText);
 
         QVBoxLayout* layout_;
 
     private:
         QLabel* currentPlayerLabel_;
         QLabel* currentPlayerGoldLabel_;
+        QLabel* combatLogLabel_;
         int currentPlayerIdx_;
         int currentPlayerGold_;
 
