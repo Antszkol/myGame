@@ -12,10 +12,6 @@ TileWidget::TileWidget(Tile* tilePtr, MapWidget* mapWidgetPtr) : QGraphicsRectIt
     this->setPos(tileIndex.first*scaleFactor, tileIndex.second*scaleFactor);
 }
 
-Tile* TileWidget::getTilePtr(){
-    return this->tilePtr_;
-};
-
 void TileWidget::hoverEnterEvent(QGraphicsSceneHoverEvent* event) {
     if(this->mapWidgetPtr_){
         mapWidgetPtr_->onTileHovered(this);
@@ -36,3 +32,7 @@ void TileWidget::mousePressEvent(QGraphicsSceneMouseEvent* event){
     }
     QGraphicsRectItem::mousePressEvent(event);
 }
+
+Tile* TileWidget::getTilePtr(){
+    return this->tilePtr_;
+};

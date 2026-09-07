@@ -19,10 +19,6 @@ void Map::loadMap(){
     }
 }
 
-vector<Tile*> Map::getMapTiles(){
-    return this->mapTiles_;
-}
-
 bool Map::areTilesAdjacent(Tile* baseTilePtr, Tile* neighbourTilePtr){
     pair<int, int> baseTileIdx = baseTilePtr->getTileIndex();
     pair<int, int> neighbourTileIdx = neighbourTilePtr->getTileIndex();
@@ -32,6 +28,10 @@ bool Map::areTilesAdjacent(Tile* baseTilePtr, Tile* neighbourTilePtr){
     else{
         return false;
     }
+}
+
+vector<Tile*> Map::getMapTiles(){
+    return this->mapTiles_;
 }
 
 vector<Tile*> Map::getTileNeighbours(Tile* baseTilePtr){

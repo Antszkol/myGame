@@ -27,8 +27,8 @@ add_executable(myGame
     src/tile.cpp
     src/map.cpp
     src/mapWidget.cpp
+    src/mapHandler.cpp
     src/tileWidget.cpp
-    src/mapWidget.cpp
     src/shopWidget.cpp
     src/unit.cpp
     src/unitWidget.cpp

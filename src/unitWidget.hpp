@@ -1,23 +1,27 @@
 #pragma once
-#include <QGraphicsRectItem>
+
 #include <QBrush>
+#include <QGraphicsPixmapItem>
 
 #include "tileWidget.hpp"
 #include "unitType.hpp"
 
 class Unit;
 
-class UnitWidget : public QGraphicsRectItem {
+class UnitWidget : public QGraphicsPixmapItem {
     public:
-        UnitWidget(int unitType, TileWidget* destinationTileWidgetPtr, Unit* unitPtr);
+        UnitWidget(UnitType unitType, TileWidget* destinationTileWidgetPtr, Unit* unitPtr);
 
-        void setCurrentTileWidget(TileWidget* tileWidgetPtr);
         void updateHealthLabel();
-        Unit* getUnitPtr();
-        QGraphicsSimpleTextItem* getHealthLabelPtr();
+
+        void setDeadPixmap();
+        void setCurrentTileWidget(TileWidget* tileWidgetPtr);
         void setUnitPtr(Unit* unitPtr);
+
+        Unit* getUnitPtr() const;
+        QGraphicsSimpleTextItem* getHealthLabelPtr();
         TileWidget* getTileWidgetPtr();
-    
+
     private:
         TileWidget* tileWidgetPtr_;
         Unit* unitPtr_;

@@ -14,18 +14,17 @@ class Tile{
 
         bool isPassable();
         bool isOccupied();
-        bool isWithinDeploymentZone(Player* playerPtr);
+        bool isWithinDeploymentZone(const Player* playerPtr);
+
         void setIndex(pair<int, int> index);
-
-        pair<int, int> getTileIndex();
-
-        int getTileType() const;
-        int getSpeedImpact() const;
-        Unit* getOccupant() const;
         void setTileType(int tileType);
         void setOccupation(Unit* occupant);
         void setTileWidget(TileWidget* tileWidgetPtr);
-        void setWalkability(bool boolean);
+
+        pair<int, int> getTileIndex();
+        int getTileType() const;
+        int getSpeedImpact() const;
+        Unit* getOccupant() const;
         TileWidget* getTileWidgetPtr();
 
     private:
@@ -36,5 +35,4 @@ class Tile{
 
         TileWidget* tileWidgetPtr_;
         Unit* occupant_;
-        bool isWalkable_;
 };

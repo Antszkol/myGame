@@ -18,18 +18,19 @@ class TurnHandler : public QObject {
         void recruitUnitSlot(UnitType unitTypeIdx);
         void attackUnitSlot();
         void moveUnitSlot();
-        void switchPlayerSlot();
+        void endTurnSlot();
 
     public:
         TurnHandler(BattleWidget* battleWidgetPtr, ShopWidget* shopWidgetPtr, ActionWidget* actionWidgetPtr, int lastMapColumn);
             
-        ActionMode getActionMode(){return this->actionMode_;};    
         void moveUnit(TileWidget* tileWidgetStart, TileWidget* tileWidgetDest);
         void attackUnit(TileWidget* tileWidgetStart, TileWidget* tileWidgetDest);
         void confirmUnitDeployment(TileWidget* tileWidgetPtr);
-        void switchPlayer();
+        void endTurn();
+
         void setActionMode(ActionMode actionMode);
 
+        ActionMode getActionMode(){return this->actionMode_;};
         Player* getPlayerPtr(int playerIdx);
         ActionWidget* getActionWidgetPtr();
         Player* getCurrentPlayerPtr();

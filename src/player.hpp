@@ -6,13 +6,13 @@ class Player {
     public:
         Player(int playerIdx, int startColumn);
 
-        int getGold();
-        int getPlayerIdx();
-        const int getPlayerStartColumn();
         void subtractGold(int minus);
-
         void refreshUnitsSpeed();
         void addUnit(Unit* unitPtr);
+
+        int getGold();
+        int getPlayerIdx() const;
+        int getPlayerStartColumn() const;
 
     private:
         std::vector<Unit*> units_;

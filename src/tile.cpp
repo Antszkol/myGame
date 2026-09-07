@@ -4,8 +4,8 @@
 
 // tileType_ ustawia sie w konstruktorze, musimy go z
 
-Tile::Tile(pair<int, int> tileIndex, int tileType) : 
-    tileIndex_(tileIndex), 
+Tile::Tile(pair<int, int> tileIndex, int tileType) :
+    tileIndex_(tileIndex),
     tileType_(tileType),
     speedImpact_(1),
     moraleImpact_(0)
@@ -13,20 +13,11 @@ Tile::Tile(pair<int, int> tileIndex, int tileType) :
         occupant_ = nullptr;
     };
 
-void Tile::setOccupation(Unit* occupant){
-    this->occupant_ = occupant;
-    return;
-}
-
-bool Tile::isWithinDeploymentZone(Player* playerPtr){
+bool Tile::isWithinDeploymentZone(const Player* playerPtr){
     if(std::abs(this->getTileIndex().first - playerPtr->getPlayerStartColumn()) < 2){
         return true;
     }
     return false;
-}
-
-int Tile::getSpeedImpact() const {
-    return this->speedImpact_;
 }
 
 bool Tile::isPassable(){
@@ -34,25 +25,30 @@ bool Tile::isPassable(){
     else return true;
 }
 
-Unit* Tile::getOccupant() const {
-    return this->occupant_;
-}
-
 bool Tile::isOccupied(){
     if(this->occupant_ != nullptr) return true;
     else return false;
 }
 
-TileWidget* Tile::getTileWidgetPtr(){
-    return this->tileWidgetPtr_;
-}
-
-void Tile::setWalkability(bool boolean){
-    this->isWalkable_ = boolean;
+void Tile::setOccupation(Unit* occupant){
+    this->occupant_ = occupant;
+    return;
 }
 
 void Tile::setTileWidget(TileWidget* tileWidgetPtr){
     this->tileWidgetPtr_ = tileWidgetPtr;
+}
+
+int Tile::getSpeedImpact() const {
+    return this->speedImpact_;
+}
+
+Unit* Tile::getOccupant() const {
+    return this->occupant_;
+}
+
+TileWidget* Tile::getTileWidgetPtr(){
+    return this->tileWidgetPtr_;
 }
 
 int Tile::getTileType() const {

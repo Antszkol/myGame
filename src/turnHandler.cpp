@@ -2,10 +2,11 @@
 #include "turnHandler.hpp"
 #include "battleWidget.hpp"
 #include "shopWidget.hpp"
+#include <QTimer>
 
 TurnHandler::TurnHandler(BattleWidget* battleWidgetPtr, ShopWidget* shopWidgetPtr, ActionWidget* actionWidgetPtr, int lastMapColumn){
     Player* player1 = new Player(1, 0);
-    Player* player2 = new Player(2, lastMapColumn); 
+    Player* player2 = new Player(2, lastMapColumn);
     this->actionMode_ = ActionMode::None;
     this->players_ = {player1, player2};
 
@@ -21,30 +22,27 @@ TurnHandler::TurnHandler(BattleWidget* battleWidgetPtr, ShopWidget* shopWidgetPt
             this->recruitUnitSlot(unitType);});
 
     connect(this->actionWidgetPtr_, &ActionWidget::endTurnRequested, this, [this](){
-            this->switchPlayerSlot();});
-    
+            this->endTurnSlot();});
+
     connect(this->actionWidgetPtr_, &ActionWidget::moveUnitRequested, [this](){
             this->moveUnitSlot();});
-    
+
     connect(this->actionWidgetPtr_, &ActionWidget::attackUnitRequested, [this](){
             this->attackUnitSlot();});
 };
-
-Player* TurnHandler::getPlayerPtr(int playerIdx){
-    return playerIdx == 1 ? players_.first : players_.second;
-}
 
 void TurnHandler::moveUnit(TileWidget* tileWidgetStart, TileWidget* tileWidgetDest){
     Unit* unitPtr = tileWidgetStart->getTilePtr()->getOccupant();
     unitPtr->getUnitWidgetPtr()->setCurrentTileWidget(tileWidgetDest);
     tileWidgetStart->getTilePtr()->setOccupation(nullptr);
     tileWidgetDest->getTilePtr()->setOccupation(unitPtr);
-    
+
     return;
 }
 
 void TurnHandler::attackUnit(TileWidget* tileWidgetStart, TileWidget* tileWidgetDest){
     Unit* unitPtr = tileWidgetStart->getTilePtr()->getOccupant();
+    unitPtr->setHasAttacked(true);
     int damage = unitPtr->getUnitStats().damage_;
 
     if(damage < tileWidgetDest->getTilePtr()->getOccupant()->getRemainingHealth()){
@@ -55,19 +53,23 @@ void TurnHandler::attackUnit(TileWidget* tileWidgetStart, TileWidget* tileWidget
         Unit* deleteUnitPtr = tileWidgetDest->getTilePtr()->getOccupant();
         UnitWidget* deleteUnitWidgetPtr = deleteUnitPtr->getUnitWidgetPtr();
         QGraphicsSimpleTextItem* deleteHealthLabelPtr = deleteUnitWidgetPtr->getHealthLabelPtr();
+        delete deleteHealthLabelPtr;
 
         tileWidgetDest->getTilePtr()->setOccupation(nullptr);
 
-        delete deleteUnitPtr;
-        delete deleteHealthLabelPtr;
-        delete deleteUnitWidgetPtr;
+        deleteUnitWidgetPtr->setDeadPixmap(); // czy jak tam nazwiesz tę metodę setPixmap
+
+        QTimer::singleShot(700, [deleteUnitPtr, deleteUnitWidgetPtr, tileWidgetDest](){
+            delete deleteUnitPtr;
+            delete deleteUnitWidgetPtr;
+        });
 
         return;
     }
     return;
 }
 
-void TurnHandler::switchPlayer(){
+void TurnHandler::endTurn(){
     if(currentPlayerPtr_ == players_.first){
         currentPlayerPtr_ = players_.second;
         this->actionWidgetPtr_->setCurrentPlayerStats(players_.second);
@@ -77,11 +79,8 @@ void TurnHandler::switchPlayer(){
         this->actionWidgetPtr_->setCurrentPlayerStats(players_.first);
     }
     this->currentPlayerPtr_->refreshUnitsSpeed();
-    return;
-}
-
-void TurnHandler::setActionMode(ActionMode actionMode){
-    this->actionMode_ = actionMode;
+    this->battleWidgetPtr_->getMapWidgetPtr()->removeAllSelection();
+    this->actionMode_ = ActionMode::None;
     return;
 }
 
@@ -101,17 +100,9 @@ void TurnHandler::recruitUnitSlot(UnitType unitTypeIdx){
     }
 }
 
-ActionWidget* TurnHandler::getActionWidgetPtr(){
-    return this->actionWidgetPtr_;
-}
-
-void TurnHandler::switchPlayerSlot(){
-    this->switchPlayer();
+void TurnHandler::endTurnSlot(){
+    this->endTurn();
     return;
-}
-
-Player* TurnHandler::getCurrentPlayerPtr(){
-    return this->currentPlayerPtr_;
 }
 
 void TurnHandler::confirmUnitDeployment(TileWidget* tileWidgetPtr){
@@ -124,4 +115,21 @@ void TurnHandler::confirmUnitDeployment(TileWidget* tileWidgetPtr){
         this->getActionWidgetPtr()->setCurrentPlayerStats(this->currentPlayerPtr_);
     }
     return;
+}
+
+void TurnHandler::setActionMode(ActionMode actionMode){
+    this->actionMode_ = actionMode;
+    return;
+}
+
+Player* TurnHandler::getPlayerPtr(int playerIdx){
+    return playerIdx == 1 ? players_.first : players_.second;
+}
+
+ActionWidget* TurnHandler::getActionWidgetPtr(){
+    return this->actionWidgetPtr_;
+}
+
+Player* TurnHandler::getCurrentPlayerPtr(){
+    return this->currentPlayerPtr_;
 }

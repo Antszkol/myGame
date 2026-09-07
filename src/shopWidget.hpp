@@ -12,8 +12,9 @@ class ShopWidget : public QWidget {
     public:
         ShopWidget();
 
-        QGridLayout* layout_;
         void buyUnit(Player* currentPlayerPtr, UnitType unitType);
+
+        QGridLayout* layout_;
 
     signals:
         void unitPurchaseRequested(UnitType unitType);

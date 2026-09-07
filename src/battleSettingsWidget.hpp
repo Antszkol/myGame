@@ -11,11 +11,11 @@ class BattleSettingsWidget : public QDialog{
         BattleSettingsWidget(BattleSetting* battleSettingPtr, QWidget* parent);
         ~BattleSettingsWidget();
 
+        BattleSetting* getBattleSetting();
+
         QSpinBox* startGoldSpinBox_;
         QSpinBox* maxUnitSpinBox_;
         QPushButton* saveButton_;
-
-        BattleSetting* getBattleSetting();
 
     private slots:
         void onSaveClicked();

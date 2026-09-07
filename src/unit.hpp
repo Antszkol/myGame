@@ -9,23 +9,28 @@ class Unit {
     public:
         Unit(const Player* owner, const UnitType& unitType, const UnitStats& unitStats);
 
+        void subtractSpeed(int subtract);
+        void dealDamage(int damage);
+        bool hasAttacked();
+
+        void setRemainingSpeed(int speed);
+        void setUnitWidgetPtr(UnitWidget* unitWidgetPtr);
+        void setHasAttacked(bool hasAttacked);
+
         UnitStats getUnitStats() const;
-        int getUnitType() const;
+        UnitType getUnitType() const;
         UnitWidget* getUnitWidgetPtr() const;
         int getRemainingSpeed();
         int getRemainingHealth();
         int getHealth();
-        void subtractSpeed(int subtract);
-        void setRemainingSpeed(int speed);
-        void setUnitWidgetPtr(UnitWidget* unitWidgetPtr);
-        void dealDamage(int damage);
         const Player* getOwnerPtr();
 
     protected:
-        const int unitType_;
+        const UnitType unitType_;
         int remainingSpeed_;
         int remainingHealth_;
+        bool hasAttacked_;
         UnitWidget* unitWidgetPtr_;
         const Player* ownerPtr_;
-        const UnitStats unitStats_;  
+        const UnitStats unitStats_;
 };

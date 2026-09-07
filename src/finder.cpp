@@ -9,7 +9,9 @@ std::map<Tile*, int> Finder::findMovePaths(Tile* startingTile, int speed){
     std::map<Tile*, int> distMap;
 
     for(const auto& tile : this->map_.getMapTiles()){
-        if(std::abs(tileIdx.first - tile->getTileIndex().first) <= speed && std::abs(tileIdx.second - tile->getTileIndex().second) <= speed){
+        if(std::abs(tileIdx.first - tile->getTileIndex().first) <= speed 
+        && std::abs(tileIdx.second - tile->getTileIndex().second) <= speed
+        && tile->isPassable()){
             distMap.insert({tile, 1000000});
         }
     }

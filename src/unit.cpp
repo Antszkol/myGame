@@ -1,22 +1,47 @@
 #include "unit.hpp"
 #include "player.hpp"
 
-Unit::Unit(const Player* owner, const UnitType& unitType, const UnitStats& unitStats) : 
+Unit::Unit(const Player* owner, const UnitType& unitType, const UnitStats& unitStats) :
     ownerPtr_(owner),
     unitStats_(unitStats),
     unitType_(unitType)
 {
     this->remainingSpeed_ = this->unitStats_.speed_;
     this->remainingHealth_ = this->unitStats_.health_;
+    this->hasAttacked_ = false;
 }
 
-UnitStats Unit::getUnitStats() const {
-    return this->unitStats_;
+void Unit::dealDamage(int damage){
+    this->remainingHealth_ = this->remainingHealth_ - damage;
+    return;
+}
+
+void Unit::subtractSpeed(int subtract){
+    this->remainingSpeed_ = this->remainingSpeed_ - subtract;
+    return;
+}
+
+bool Unit::hasAttacked(){
+    return this->hasAttacked_;
 }
 
 void Unit::setUnitWidgetPtr(UnitWidget* unitWidgetPtr){
     this->unitWidgetPtr_ = unitWidgetPtr;
     return;
+}
+
+void Unit::setRemainingSpeed(int speed){
+    this->remainingSpeed_ = speed;
+    return;
+}
+
+void Unit::setHasAttacked(bool hasAttacked){
+    this->hasAttacked_ = hasAttacked;
+    return;
+}
+
+UnitStats Unit::getUnitStats() const {
+    return this->unitStats_;
 }
 
 UnitWidget* Unit::getUnitWidgetPtr() const {
@@ -27,16 +52,6 @@ int Unit::getHealth(){
     return this->remainingHealth_;
 }
 
-void Unit::dealDamage(int damage){
-    this->remainingHealth_ = this->remainingHealth_ - damage;
-    return;
-}
-
-void Unit::setRemainingSpeed(int speed){
-    this->remainingSpeed_ = speed;
-    return;
-}
-
 int Unit::getRemainingSpeed(){
     return this->remainingSpeed_;
 }
@@ -45,12 +60,7 @@ int Unit::getRemainingHealth(){
     return this->remainingHealth_;
 }
 
-void Unit::subtractSpeed(int subtract){
-    this->remainingSpeed_ = this->remainingSpeed_ - subtract;
-    return;
-}
-
-int Unit::getUnitType() const {
+UnitType Unit::getUnitType() const {
     return this->unitType_;
 }
 

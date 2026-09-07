@@ -36,10 +36,6 @@ void BattleWidget::setActionWidget(){
     return;
 }
 
-MapWidget* BattleWidget::getMapWidgetPtr(){
-    return this->mapWidgetPtr_;
-}
-
 void BattleWidget::setBattle(Battle* battlePtr, BattleSetting* battleSettingPtr){
     battleSettingPtr_ = battleSettingPtr;
     battlePtr_ = battlePtr;
@@ -49,4 +45,8 @@ void BattleWidget::setBattle(Battle* battlePtr, BattleSetting* battleSettingPtr)
     mapWidgetPtr_ = new MapWidget(*battlePtr->getMap(), this->turnHandlerPtr_);
     layout_->insertWidget(1, mapWidgetPtr_, 3);
     return;
+}
+
+MapWidget* BattleWidget::getMapWidgetPtr(){
+    return this->mapWidgetPtr_;
 }
