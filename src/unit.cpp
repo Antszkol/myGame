@@ -25,11 +25,6 @@ bool Unit::hasAttacked(){
     return this->hasAttacked_;
 }
 
-void Unit::setUnitWidgetPtr(UnitWidget* unitWidgetPtr){
-    this->unitWidgetPtr_ = unitWidgetPtr;
-    return;
-}
-
 void Unit::setRemainingSpeed(int speed){
     this->remainingSpeed_ = speed;
     return;
@@ -47,10 +42,6 @@ void Unit::setMorale(int morale){
 
 UnitStats Unit::getUnitStats() const {
     return this->unitStats_;
-}
-
-UnitWidget* Unit::getUnitWidgetPtr() const {
-    return this->unitWidgetPtr_;
 }
 
 int Unit::getHealth(){

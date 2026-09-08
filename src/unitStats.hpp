@@ -12,5 +12,5 @@ struct UnitStats {
 
 inline std::map<UnitType, UnitStats> UnitStatsMap = {
     {UnitType::footman, {0, 100, 45, 1, 2, 25}},
-    {UnitType::archer, {1, 80, 30, 3, 3, 20}}
+    {UnitType::archer, {1, 70, 30, 3, 3, 20}}
 };

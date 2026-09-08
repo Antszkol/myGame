@@ -39,7 +39,8 @@ TurnHandler::TurnHandler(BattleWidget* battleWidgetPtr, ShopWidget* shopWidgetPt
 
 void TurnHandler::moveUnit(TileWidget* tileWidgetStart, TileWidget* tileWidgetDest){
     Unit* unitPtr = tileWidgetStart->getTilePtr()->getOccupant();
-    unitPtr->getUnitWidgetPtr()->setCurrentTileWidget(tileWidgetDest);
+    MapHandler* mapHandlerPtr = this->battleWidgetPtr_->getMapWidgetPtr()->getMapHandlerPtr();
+    mapHandlerPtr->getUnitWidget(unitPtr)->setCurrentTileWidget(tileWidgetDest);
     tileWidgetStart->getTilePtr()->setOccupation(nullptr);
     tileWidgetDest->getTilePtr()->setOccupation(unitPtr);
 
@@ -79,7 +80,7 @@ void TurnHandler::attackUnit(TileWidget* tileWidgetStart, TileWidget* tileWidget
 
     if(damage < tileWidgetDest->getTilePtr()->getOccupant()->getRemainingHealth()){
         tileWidgetDest->getTilePtr()->getOccupant()->dealDamage(damage);
-        tileWidgetDest->getTilePtr()->getOccupant()->getUnitWidgetPtr()->updateHealthLabel();
+        mapHandlerPtr->getUnitWidget(tileWidgetDest->getTilePtr()->getOccupant())->updateHealthLabel();
 
         int damageDiff = std::abs(damage - tileWidgetDest->getTilePtr()->getOccupant()->getRemainingHealth());
 
@@ -90,7 +91,7 @@ void TurnHandler::attackUnit(TileWidget* tileWidgetStart, TileWidget* tileWidget
     }
     else if(true){
         Unit* deleteUnitPtr = tileWidgetDest->getTilePtr()->getOccupant();
-        UnitWidget* deleteUnitWidgetPtr = deleteUnitPtr->getUnitWidgetPtr();
+        UnitWidget* deleteUnitWidgetPtr = mapHandlerPtr->getUnitWidget(deleteUnitPtr);
         QGraphicsSimpleTextItem* deleteHealthLabelPtr = deleteUnitWidgetPtr->getHealthLabelPtr();
         QGraphicsSimpleTextItem* deleteMoraleLabelPtr = deleteUnitWidgetPtr->getMoraleLabelPtr();
         delete deleteHealthLabelPtr;
@@ -106,6 +107,7 @@ void TurnHandler::attackUnit(TileWidget* tileWidgetStart, TileWidget* tileWidget
         this->getCurrentPlayerPtr()->addFrag();
         this->getNotCurrentPlayerPtr()->addCasualty();
         this->getNotCurrentPlayerPtr()->removeUnit(deleteUnitPtr);
+        mapHandlerPtr->removeUnitWidget(deleteUnitPtr);
 
         this->refreshUnitMorale();
 
@@ -158,7 +160,7 @@ void TurnHandler::endTurnSlot(){
 void TurnHandler::confirmUnitDeployment(TileWidget* tileWidgetPtr){
     if(this->actionMode_ == ActionMode::RecruitUnit){
         UnitWidget* unitWidgetPtr = new UnitWidget(this->pendingUnitType_, tileWidgetPtr, new Unit(this->currentPlayerPtr_, this->pendingUnitType_, UnitStatsMap.at(this->pendingUnitType_)));
-        unitWidgetPtr->getUnitPtr()->setUnitWidgetPtr(unitWidgetPtr);
+        this->battleWidgetPtr_->getMapWidgetPtr()->getMapHandlerPtr()->addUnitWidget(unitWidgetPtr);
         tileWidgetPtr->getTilePtr()->setOccupation(unitWidgetPtr->getUnitPtr());
         this->currentPlayerPtr_->addUnit(unitWidgetPtr->getUnitPtr());
         this->actionMode_ = ActionMode::None;
@@ -207,9 +209,10 @@ void TurnHandler::refreshUnitMorale(){
 
     for(Player* playerPtr : {this->players_.first, this->players_.second}){
         for(Unit* unitPtr : playerPtr->getUnits()){
-            Tile* tilePtr = unitPtr->getUnitWidgetPtr()->getTileWidgetPtr()->getTilePtr();
+            UnitWidget* unitWidgetPtr = mapHandlerPtr->getUnitWidget(unitPtr);
+            Tile* tilePtr = unitWidgetPtr->getTileWidgetPtr()->getTilePtr();
             int morale = mapHandlerPtr->calculateMorale(unitPtr, tilePtr);
-            unitPtr->getUnitWidgetPtr()->updateMoraleLabel(morale);
+            unitWidgetPtr->updateMoraleLabel(morale);
         }
     }
     return;

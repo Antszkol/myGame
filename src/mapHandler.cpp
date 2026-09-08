@@ -24,7 +24,7 @@ int MapHandler::calculateMorale(Unit* unitPtr, Tile* tilePtr){
         }
     }
 
-    int tileType = unitPtr->getUnitWidgetPtr()->getTileWidgetPtr()->getTilePtr()->getTileType();
+    int tileType = this->getUnitWidget(unitPtr)->getTileWidgetPtr()->getTilePtr()->getTileType();
 
     if(tileType == TileType::mud){
         moraleSum = moraleSum - 20;
@@ -36,6 +36,27 @@ int MapHandler::calculateMorale(Unit* unitPtr, Tile* tilePtr){
 void MapHandler::addTileWidget(TileWidget* tileWidgetPtr){
     this->tileWidgets_.push_back(tileWidgetPtr);
     return;
+}
+
+void MapHandler::addUnitWidget(UnitWidget* unitWidgetPtr){
+    this->unitWidgets_.push_back(unitWidgetPtr);
+    return;
+}
+
+void MapHandler::removeUnitWidget(Unit* unitPtr){
+    std::erase_if(this->unitWidgets_, [unitPtr](UnitWidget* widgetPtr){
+        return widgetPtr->getUnitPtr() == unitPtr;
+    });
+    return;
+}
+
+UnitWidget* MapHandler::getUnitWidget(Unit* unitPtr) const {
+    for(UnitWidget* widgetPtr : this->unitWidgets_){
+        if(widgetPtr->getUnitPtr() == unitPtr){
+            return widgetPtr;
+        }
+    }
+    return nullptr;
 }
 
 std::map<Tile*, int> MapHandler::findMovePaths(Tile* startingTile, int speed){
@@ -91,13 +112,18 @@ void MapHandler::setTile(TileWidget* tileWidgetPtr){
     return;
 }
 
+void MapHandler::unsetTile(){
+    this->tileSet_ = nullptr;
+    return;
+}
+
 void MapHandler::setUnitSelected(Unit* unitPtr){
     this->unitSelected_ = unitPtr;
     return;
 }
 
 TileWidget* MapHandler::getTileSet(){
-    return this->tileSet_->getTileWidgetPtr();
+    return this->getTileWidgetPtr(this->tileSet_->getTileIndex());
 }
 
 Unit* MapHandler::getUnitSelected() const {
@@ -105,7 +131,7 @@ Unit* MapHandler::getUnitSelected() const {
 }
 
 TileWidget* MapHandler::getTileWidgetPtr(pair<int, int> tileIdx) const {
-    return this->tileWidgets_[(tileIdx.first * 8) + tileIdx.second];
+    return this->tileWidgets_[(tileIdx.first * this->map_.getMapSize().first) + tileIdx.second];
 }
 
 const std::map<Tile*, int>& MapHandler::getTilesSelectedMap() const {

@@ -7,6 +7,7 @@
 #include "tile.hpp"
 #include "tileWidget.hpp"
 #include "unit.hpp"
+#include "unitWidget.hpp"
 
 using namespace std;
 
@@ -15,6 +16,9 @@ class MapHandler {
         MapHandler(Map& map);
 
         void addTileWidget(TileWidget* tileWidgetPtr);
+        void addUnitWidget(UnitWidget* unitWidgetPtr);
+        void removeUnitWidget(Unit* unitPtr);
+        UnitWidget* getUnitWidget(Unit* unitPtr) const;
 
         std::map<Tile*, int> findMovePaths(Tile* startingTile, int speed);
         std::vector<Tile*> findTargets(Tile* startingTilePtr, int range, Player* currentPlayerPtr);
@@ -30,6 +34,7 @@ class MapHandler {
 
         void setUnit(TileWidget* tileWidgetPtr, Unit* unitPtr);
         void setTile(TileWidget* tileWidgetPtr);
+        void unsetTile();
         void setUnitSelected(Unit* unitPtr);
 
         TileWidget* getTileSet();
@@ -41,6 +46,7 @@ class MapHandler {
     private:
         Finder* finder_;
         std::vector<TileWidget*> tileWidgets_;
+        std::vector<UnitWidget*> unitWidgets_;
 
         Tile* tileSet_;
         Unit* unitSelected_;

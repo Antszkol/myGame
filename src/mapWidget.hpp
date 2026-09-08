@@ -20,6 +20,9 @@ class MapWidget : public QGraphicsView {
         MapWidget(Map& argMap, TurnHandler* turnHandlerPtr);
         ~MapWidget();
 
+        void selectTile(TileWidget* tileWidgetPtr);
+        void unSelectTile(TileWidget* tileWidgetPtr);
+
         void onTileHovered(TileWidget* tileWidgetPtr);
         void onTileLeft(TileWidget* tileWidgetPtr);
         void onTileClicked(TileWidget* tileWidgetPtr);
@@ -37,6 +40,7 @@ class MapWidget : public QGraphicsView {
     private:
         void paintTile(QPainter* painter, TileWidget* tileWidgetPtr);
         void restoreTileColor(Tile* tilePtr);
+        QBrush getSelectedBrush(Tile* tilePtr);
 
         MapHandler* mapHandler_;
         QGraphicsScene* scene_;

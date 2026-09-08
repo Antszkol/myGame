@@ -9,6 +9,6 @@ enum UnitType{
 };
 
 inline std::map<UnitType, std::string> UnitTypeMap = {
-    {UnitType::footman, "footmen"},
-    {UnitType::archer, "archer"}
+    {UnitType::footman, "Footmen"},
+    {UnitType::archer, "Archer"}
 };

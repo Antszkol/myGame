@@ -51,7 +51,7 @@ vector<Tile*> Map::getTileSurrounding(Tile* baseTilePtr){
         pair<int, int> neighbourTileIdx = neighbourTilePtr->getTileIndex();
         bool isSurrounding;
 
-        if((std::abs(neighbourTileIdx.first - baseTileIdx.first) == 1 && (std::abs(neighbourTileIdx.second - baseTileIdx.second) == 1))){
+        if((std::abs(neighbourTileIdx.first - baseTileIdx.first) <= 1) && (std::abs(neighbourTileIdx.second - baseTileIdx.second) <= 1) && (neighbourTilePtr != baseTilePtr)){
             isSurrounding = true;
         }
         else{

@@ -19,6 +19,28 @@ MainWidget::MainWidget(QWidget *parent){
     battleSettingPtr_ = new BattleSetting();
     battlePtr_ = nullptr; // created once a battle actually starts
 
+    this->setAttribute(Qt::WA_StyledBackground, true);
+    this->setStyleSheet(
+        "QWidget {"
+        "   background-color: #141414;"
+        "   color: #eaeaea;"
+        "   font-family: \"EB Garamond\";"
+        "   font-size: 20pt;"
+        "   font-weight: 63;"
+        "   font-style: italic;"
+        "}"
+        "QPushButton {"
+        "   background-color: qlineargradient(x1:0, y1:0, x2:0, y2:1, stop:0 #858585, stop:1 #353535);"
+        "   border: 1px solid #888888;"
+        "   border-radius: 8px;"
+        "   padding: 8px 12px;"
+        "}"
+        "QPushButton:hover {"
+        "   background-color: qlineargradient(x1:0, y1:0, x2:0, y2:1, stop:0 #e8e8e8, stop:1 #b8b8b8);"
+        "}"
+        "QPushButton:pressed { background-color: #909090; }"
+    );
+
     setWindowFlags(Qt::FramelessWindowHint);
     pair<int,int> startupSize = settingsPtr_->getWindowSize();
     setFixedSize(startupSize.first, startupSize.second);

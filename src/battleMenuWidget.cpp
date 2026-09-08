@@ -1,6 +1,7 @@
 #include <QWidget>
 #include <QPushButton>
 #include <QVBoxLayout>
+#include <QHBoxLayout>
 #include "battle.hpp"
 #include "baseScreenWidget.hpp"
 #include "battleMenuWidget.hpp"
@@ -8,13 +9,14 @@
 
 BattleMenuWidget::BattleMenuWidget(BattleSetting* battleSettingPtr){
     this->battleSettingsWidgetPtr_ = new BattleSettingsWidget(battleSettingPtr, this);
-    
-    QFont font("Garamond", 16);
-    this->setFont(font);
+    this->setAttribute(Qt::WA_StyledBackground, true);
 
     QPushButton* battleButton = new QPushButton("Start Battle!", this);
+    battleButton->setStyleSheet("font-size: 24pt;");
     QPushButton* battleSettingsButton = new QPushButton("Battle Settings", this);
+    battleSettingsButton->setStyleSheet("font-size: 24pt;");
     QPushButton* backButton = new QPushButton("Back", this);
+    backButton->setStyleSheet("font-size: 24pt;");
 
     connect(battleButton, &QPushButton::clicked, this, [this](){
         navigateTo(Screen::battleWidget);
@@ -27,9 +29,13 @@ BattleMenuWidget::BattleMenuWidget(BattleSetting* battleSettingPtr){
     });
 
     QVBoxLayout* layout = new QVBoxLayout(this);
-    layout->addWidget(battleButton);
-    layout->addWidget(battleSettingsButton);
-    layout->addWidget(backButton);
+    for(QPushButton* button : {battleButton, battleSettingsButton, backButton}){
+        QHBoxLayout* buttonRowLayout = new QHBoxLayout();
+        buttonRowLayout->addStretch(1);
+        buttonRowLayout->addWidget(button, 1);
+        buttonRowLayout->addStretch(1);
+        layout->addLayout(buttonRowLayout);
+    }
 }
 
 BattleMenuWidget::~BattleMenuWidget(){}

@@ -6,6 +6,7 @@
 #include <QListWidget>
 
 ResultWidget::ResultWidget(int winnerPlayerIdx, const PlayerStats& player1Stats, const PlayerStats& player2Stats, std::vector<Message*> messagePtrVector, QWidget* parent) : QDialog(parent){
+    this->setAttribute(Qt::WA_StyledBackground, true);
     this->setWindowTitle("Battle Result");
 
     QVBoxLayout* mainLayout = new QVBoxLayout(this);

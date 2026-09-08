@@ -11,9 +11,8 @@
 #include "resultWidget.hpp"
 
 BattleWidget::BattleWidget(){
-    QFont font("Garamond", 16);
-    this->setFont(font);
-    
+    this->setAttribute(Qt::WA_StyledBackground, true);
+
     this->layout_ = new QHBoxLayout(this);
     this->setShopWidget();
     this->setActionWidget();

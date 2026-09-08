@@ -1,7 +1,6 @@
 #pragma once
 #include "unitType.hpp"
 #include "unitStats.hpp"
-#include "unitWidget.hpp"
 
 class Player;
 
@@ -14,13 +13,11 @@ class Unit {
         bool hasAttacked();
 
         void setRemainingSpeed(int speed);
-        void setUnitWidgetPtr(UnitWidget* unitWidgetPtr);
         void setHasAttacked(bool hasAttacked);
         void setMorale(int morale);
 
         UnitStats getUnitStats() const;
         UnitType getUnitType() const;
-        UnitWidget* getUnitWidgetPtr() const;
         int getRemainingSpeed();
         int getRemainingHealth();
         int getHealth();
@@ -31,7 +28,6 @@ class Unit {
         int remainingSpeed_;
         int remainingHealth_;
         bool hasAttacked_;
-        UnitWidget* unitWidgetPtr_;
         const Player* ownerPtr_;
         const UnitStats unitStats_;
         int morale_ = 0;

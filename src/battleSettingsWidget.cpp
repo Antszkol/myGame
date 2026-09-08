@@ -6,9 +6,7 @@
 #include "battleSettingsWidget.hpp"
 
 BattleSettingsWidget::BattleSettingsWidget(BattleSetting* battleSettingPtr, QWidget* parent) : QDialog(parent){
-
-    QFont font("Garamond", 16);
-    this->setFont(font);
+    this->setAttribute(Qt::WA_StyledBackground, true);
 
     this->battleSettingPtr_ = battleSettingPtr;
 

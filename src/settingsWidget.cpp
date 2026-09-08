@@ -4,6 +4,7 @@
 #include "settingsWidget.hpp"
 
 SettingsWidget::SettingsWidget(Setting* settingsPtr, QWidget* parent) : QDialog(parent){
+    this->setAttribute(Qt::WA_StyledBackground, true);
     this->settingsPtr_ = settingsPtr;
     resolutions_ = settingsPtr->getAvailableResolutions();
 

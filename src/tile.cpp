@@ -35,20 +35,12 @@ void Tile::setOccupation(Unit* occupant){
     return;
 }
 
-void Tile::setTileWidget(TileWidget* tileWidgetPtr){
-    this->tileWidgetPtr_ = tileWidgetPtr;
-}
-
 int Tile::getSpeedImpact() const {
     return this->speedImpact_;
 }
 
 Unit* Tile::getOccupant() const {
     return this->occupant_;
-}
-
-TileWidget* Tile::getTileWidgetPtr(){
-    return this->tileWidgetPtr_;
 }
 
 int Tile::getTileType() const {

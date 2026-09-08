@@ -95,7 +95,9 @@ std::vector<Tile*> Finder::FindTargets(Tile* startingTilePtr, int range, Player*
     for(const auto& [tilePtr, dist] : distMap){
         if(tilePtr->getOccupant() != nullptr){
             if(tilePtr->getOccupant()->getOwnerPtr() != currentPlayerPtr){
-                tileTargets.push_back(tilePtr);
+                if(range >= distMap.at(tilePtr)){
+                    tileTargets.push_back(tilePtr);
+                }
             }
         }
     }

@@ -1,6 +1,8 @@
 #include "unitWidget.hpp"
 #include "unit.hpp"
 #include "player.hpp"
+#include <QFont>
+#include <QPen>
 
 UnitWidget::UnitWidget(UnitType unitType, TileWidget* destinationTileWidgetPtr, Unit* unitPtr){
     int scaleFactor = 80;
@@ -29,10 +31,18 @@ UnitWidget::UnitWidget(UnitType unitType, TileWidget* destinationTileWidgetPtr, 
     this->setOffset(0, 0); 
 
     this->healthLabelPtr_ = new QGraphicsSimpleTextItem(this);
+
+    QFont font("EB Garamond", 11, QFont::Bold, true);
+    QPen labelStrokePen(Qt::white);
+
+    healthLabelPtr_->setFont(font);
+    healthLabelPtr_->setBrush(Qt::white);
     healthLabelPtr_->setText(QString::number(this->unitPtr_->getHealth()));
-    healthLabelPtr_->setPos(5, 5);
+    healthLabelPtr_->setPos(2, 2);
 
     this->moraleLabelPtr_ = new QGraphicsSimpleTextItem(this);
+    moraleLabelPtr_->setFont(font);
+    moraleLabelPtr_->setBrush(Qt::white);
     moraleLabelPtr_->setText(QString::number(50));
     moraleLabelPtr_->setPos(scaleFactor - moraleLabelPtr_->boundingRect().width() - 5, 5);
 
@@ -46,7 +56,7 @@ void UnitWidget::updateHealthLabel(){
 
 void UnitWidget::updateMoraleLabel(int morale){
     this->moraleLabelPtr_->setText(QString::number(morale));
-    this->moraleLabelPtr_->setPos(80 - this->moraleLabelPtr_->boundingRect().width() - 5, 5);
+    this->moraleLabelPtr_->setPos(80 - this->moraleLabelPtr_->boundingRect().width() - 2, 2);
     return;
 }
 
