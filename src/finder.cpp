@@ -4,14 +4,15 @@ Finder::Finder(Map& map) : map_(map){
     return;
 };
 
-std::map<Tile*, int> Finder::findMovePaths(Tile* startingTile, int speed){
+std::map<Tile*, int> Finder::findMovePaths(Tile* startingTile, int speed, bool ignoreUnits){
     pair<int, int> tileIdx = startingTile->getTileIndex();
     std::map<Tile*, int> distMap;
 
     for(const auto& tile : this->map_.getMapTiles()){
-        if(std::abs(tileIdx.first - tile->getTileIndex().first) <= speed 
+        bool tilePassable = ignoreUnits ? tile->isPassableTerrain() : tile->isPassable();
+        if(std::abs(tileIdx.first - tile->getTileIndex().first) <= speed
         && std::abs(tileIdx.second - tile->getTileIndex().second) <= speed
-        && tile->isPassable()){
+        && tilePassable){
             distMap.insert({tile, 1000000});
         }
     }

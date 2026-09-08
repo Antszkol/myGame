@@ -5,7 +5,7 @@
 
 class Player {
     public:
-        Player(int playerIdx, int startColumn);
+        Player(int playerIdx, int startColumn, bool isAI, int startGold);
 
         void subtractGold(int minus);
         void refreshUnitsSpeed();
@@ -16,6 +16,7 @@ class Player {
         void addDamageDealt(int damage);
         void addDamageReceived(int damage);
 
+        bool isAI();
         int getGold();
         int getPlayerIdx() const;
         int getPlayerStartColumn() const;
@@ -26,6 +27,7 @@ class Player {
         std::vector<Unit*> units_;
         int gold_;
         int playerIdx_;
+        bool isAI_;
         
         const int startColumn_;
         PlayerStats playerStats_;

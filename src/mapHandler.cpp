@@ -15,8 +15,7 @@ int MapHandler::calculateMorale(Unit* unitPtr, Tile* tilePtr){
     for(auto const& tilePointer : surroundingTilesPtr){
         if(tilePointer->getOccupant() != nullptr){
             if(tilePointer->getOccupant()->getOwnerPtr() == unitPtr->getOwnerPtr()){
-                moraleSum = moraleSum + 8;
-                
+                moraleSum = moraleSum + 8;   
             }
             if(tilePointer->getOccupant()->getOwnerPtr() != unitPtr->getOwnerPtr()){
                 moraleSum = moraleSum - 8;
@@ -30,7 +29,7 @@ int MapHandler::calculateMorale(Unit* unitPtr, Tile* tilePtr){
         moraleSum = moraleSum - 20;
     }
 
-    return moraleSum;
+    return this->clampValue(moraleSum);
 }
 
 void MapHandler::addTileWidget(TileWidget* tileWidgetPtr){
@@ -59,8 +58,8 @@ UnitWidget* MapHandler::getUnitWidget(Unit* unitPtr) const {
     return nullptr;
 }
 
-std::map<Tile*, int> MapHandler::findMovePaths(Tile* startingTile, int speed){
-    return this->finder_->findMovePaths(startingTile, speed);
+std::map<Tile*, int> MapHandler::findMovePaths(Tile* startingTile, int speed, bool ignoreUnits){
+    return this->finder_->findMovePaths(startingTile, speed, ignoreUnits);
 }
 
 std::vector<Tile*> MapHandler::findTargets(Tile* startingTilePtr, int range, Player* currentPlayerPtr){

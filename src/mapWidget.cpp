@@ -18,9 +18,9 @@ MapWidget::MapWidget(Map& argMap, TurnHandler* turnHandlerPtr){
         int x = i % argMap.getMapSize().first;
         int y = i / argMap.getMapSize().first;
         TileWidget* tileWidgetPtr = new TileWidget(this->map_->getTileByIndex({x, y}), this);
+        this->mapHandler_->addTileWidget(tileWidgetPtr);
         this->paintTile(&(this->painter_), tileWidgetPtr);
         scene_->addItem(tileWidgetPtr);
-        this->mapHandler_->addTileWidget(tileWidgetPtr);
     }
     this->setScene(scene_);
 }

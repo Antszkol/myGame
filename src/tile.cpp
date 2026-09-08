@@ -25,6 +25,11 @@ bool Tile::isPassable(){
     else return true;
 }
 
+bool Tile::isPassableTerrain() const {
+    if(this->getTileType() == TileType::water) return false;
+    else return true;
+}
+
 bool Tile::isOccupied(){
     if(this->occupant_ != nullptr) return true;
     else return false;

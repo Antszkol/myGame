@@ -20,9 +20,12 @@ class MapHandler {
         void removeUnitWidget(Unit* unitPtr);
         UnitWidget* getUnitWidget(Unit* unitPtr) const;
 
-        std::map<Tile*, int> findMovePaths(Tile* startingTile, int speed);
+        std::map<Tile*, int> findMovePaths(Tile* startingTile, int speed, bool ignoreUnits = false);
         std::vector<Tile*> findTargets(Tile* startingTilePtr, int range, Player* currentPlayerPtr);
 
+        template<typename T> int clampValue(T value){
+            return std::clamp(value, 0, 100);
+        }
         int calculateMorale(Unit* unitPtr, Tile* tilePtr);
         void unsetTileOccupant(TileWidget* tileWidgetPtr);
         void addTileSelection(Tile* tilePtr, int distance);

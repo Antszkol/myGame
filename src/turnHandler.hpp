@@ -11,8 +11,10 @@
 #include "unitType.hpp"
 #include "unitWidget.hpp"
 #include "logger.hpp"
+#include "battleSettings.hpp"
 
-class BattleWidget; // no include because of circular include
+class BattleWidget;
+class AIHandler;
 
 class TurnHandler : public QObject {
     Q_OBJECT
@@ -26,13 +28,14 @@ class TurnHandler : public QObject {
         void battleEnded(const Player* winnerPtr);
 
     public:
-        TurnHandler(BattleWidget* battleWidgetPtr, ShopWidget* shopWidgetPtr, ActionWidget* actionWidgetPtr, int lastMapColumn);
+        TurnHandler(BattleWidget* battleWidgetPtr, ShopWidget* shopWidgetPtr, ActionWidget* actionWidgetPtr, int lastMapColumn, bool isAI, BattleSetting* battleSettingPtr);
             
         void moveUnit(TileWidget* tileWidgetStart, TileWidget* tileWidgetDest);
         void attackUnit(TileWidget* tileWidgetStart, TileWidget* tileWidgetDest);
         void confirmUnitDeployment(TileWidget* tileWidgetPtr);
         void endTurn();
 
+        void setAIHandler(AIHandler* aiHandlerPtr);
         void setActionMode(ActionMode actionMode);
         void refreshUnitMorale();
 
@@ -48,8 +51,10 @@ class TurnHandler : public QObject {
         bool isTurnFinished_;
         std::pair<Player*, Player*> players_;
         std::map<Unit*, int> currentSpeedMap_;
+        AIHandler* aiHandlerPtr_;
         Player* currentPlayerPtr_;
         BattleWidget* battleWidgetPtr_;
+        BattleSetting* battleSettingPtr_;
         ShopWidget* shopWidgetPtr_;
         ActionWidget* actionWidgetPtr_;
         ActionMode actionMode_;

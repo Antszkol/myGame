@@ -1,3 +1,4 @@
+#pragma once
 #include <queue>
 #include <map>
 #include "tileType.hpp"
@@ -10,7 +11,7 @@ class Finder{
     public:
         Finder(Map& map);
 
-        std::map<Tile*, int> findMovePaths(Tile* startingTile, int speed);
+        std::map<Tile*, int> findMovePaths(Tile* startingTile, int speed, bool ignoreUnits = false);
         std::vector<Tile*> FindTargets(Tile* startingTilePtr, int range, Player* currentPlayerPtr);
         int calculateMorale(Unit* unitPtr, Tile* tilePtr);
 

@@ -2,7 +2,8 @@
 #include "unitType.hpp"
 
 struct UnitStats {
-    int unitType_,
+    int 
+    unitType_,
     health_,
     damage_,
     range_,

@@ -42,6 +42,7 @@ add_executable(myGame
     src/killMessage.cpp
     src/recruitMessage.cpp
     src/resultWidget.cpp
+    src/aiHandler.cpp
 )
 
 target_include_directories(myGame PRIVATE src)

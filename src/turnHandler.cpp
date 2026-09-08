@@ -9,15 +9,26 @@
 #include "attackMessage.hpp"
 #include "killMessage.hpp"
 #include "recruitMessage.hpp"
+#include "aiHandler.hpp"
 
-TurnHandler::TurnHandler(BattleWidget* battleWidgetPtr, ShopWidget* shopWidgetPtr, ActionWidget* actionWidgetPtr, int lastMapColumn){
-    Player* player1 = new Player(1, 0);
-    Player* player2 = new Player(2, lastMapColumn);
+TurnHandler::TurnHandler(BattleWidget* battleWidgetPtr, ShopWidget* shopWidgetPtr, ActionWidget* actionWidgetPtr, int lastMapColumn, bool isAI, BattleSetting* battleSettingPtr){
+    Player* player1 = new Player(1, 0, false, battleSettingPtr->getStartGold());
+    Player* player2 = nullptr;
+    this->aiHandlerPtr_ = nullptr;
+
+    if(isAI){
+        player2 = new Player(2, lastMapColumn, true, battleSettingPtr->getStartGold());
+    }
+    else{
+        player2 = new Player(2, lastMapColumn, false, battleSettingPtr->getStartGold());
+    }
+
     this->actionMode_ = ActionMode::None;
     this->players_ = {player1, player2};
 
     this->currentPlayerPtr_ = this->players_.first;
     this->battleWidgetPtr_ = battleWidgetPtr;
+    this->battleSettingPtr_ = battleSettingPtr;
     this->shopWidgetPtr_ = shopWidgetPtr;
     this->actionWidgetPtr_ = actionWidgetPtr;
 
@@ -38,6 +49,7 @@ TurnHandler::TurnHandler(BattleWidget* battleWidgetPtr, ShopWidget* shopWidgetPt
 };
 
 void TurnHandler::moveUnit(TileWidget* tileWidgetStart, TileWidget* tileWidgetDest){
+    this->actionMode_ = ActionMode::None;
     Unit* unitPtr = tileWidgetStart->getTilePtr()->getOccupant();
     MapHandler* mapHandlerPtr = this->battleWidgetPtr_->getMapWidgetPtr()->getMapHandlerPtr();
     mapHandlerPtr->getUnitWidget(unitPtr)->setCurrentTileWidget(tileWidgetDest);
@@ -57,6 +69,7 @@ void TurnHandler::moveUnit(TileWidget* tileWidgetStart, TileWidget* tileWidgetDe
 }
 
 void TurnHandler::attackUnit(TileWidget* tileWidgetStart, TileWidget* tileWidgetDest){
+    this->actionMode_ = ActionMode::None;
     Unit* unitPtr = tileWidgetStart->getTilePtr()->getOccupant();
     unitPtr->setHasAttacked(true);
 
@@ -133,6 +146,11 @@ void TurnHandler::endTurn(){
     this->currentPlayerPtr_->refreshUnitsSpeed();
     this->battleWidgetPtr_->getMapWidgetPtr()->removeAllSelection();
     this->actionMode_ = ActionMode::None;
+
+    if(currentPlayerPtr_->isAI()){
+        this->aiHandlerPtr_->executeTurn();
+    }
+
     return;
 }
 
@@ -145,7 +163,8 @@ void TurnHandler::attackUnitSlot(){
 }
 
 void TurnHandler::recruitUnitSlot(UnitType unitTypeIdx){
-    if(currentPlayerPtr_->getGold() >= UnitStatsMap.at(unitTypeIdx).cost_){
+    if(currentPlayerPtr_->getGold() >= UnitStatsMap.at(unitTypeIdx).cost_
+    && static_cast<int>(currentPlayerPtr_->getUnits().size()) < this->battleSettingPtr_->getMaxUnit()){
         this->shopWidgetPtr_->buyUnit(currentPlayerPtr_, unitTypeIdx);
         this->pendingUnitType_ = unitTypeIdx;
         this->actionMode_ = ActionMode::RecruitUnit;
@@ -171,6 +190,11 @@ void TurnHandler::confirmUnitDeployment(TileWidget* tileWidgetPtr){
 
         this->refreshUnitMorale();
     }
+    return;
+}
+
+void TurnHandler::setAIHandler(AIHandler* aiHandlerPtr){
+    this->aiHandlerPtr_ = aiHandlerPtr;
     return;
 }
 

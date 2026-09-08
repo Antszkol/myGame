@@ -12,6 +12,7 @@ class Tile{
         Tile(pair<int, int> pair, int tileType);
 
         bool isPassable();
+        bool isPassableTerrain() const;
         bool isOccupied();
         bool isWithinDeploymentZone(const Player* playerPtr);
 

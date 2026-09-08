@@ -3,6 +3,8 @@
 #include <QFormLayout>
 #include <QFont>
 #include <QApplication>
+#include <QString>
+#include <QVariant>
 #include "battleSettingsWidget.hpp"
 
 BattleSettingsWidget::BattleSettingsWidget(BattleSetting* battleSettingPtr, QWidget* parent) : QDialog(parent){
@@ -18,19 +20,30 @@ BattleSettingsWidget::BattleSettingsWidget(BattleSetting* battleSettingPtr, QWid
     maxUnitSpinBox_->setRange(0, 20);
     maxUnitSpinBox_->setValue(battleSettingPtr->getMaxUnit());
 
+    gameModeComboBox_ = new QComboBox(this);
+    for(const auto& [mode, name] : GameModeMap){
+        gameModeComboBox_->addItem(QString::fromStdString(name), QVariant::fromValue(static_cast<int>(mode)));
+    }
+    int currentModeIndex = gameModeComboBox_->findData(QVariant::fromValue(static_cast<int>(battleSettingPtr->getGameMode())));
+    if(currentModeIndex != -1){
+        gameModeComboBox_->setCurrentIndex(currentModeIndex);
+    }
+
     saveButton_ = new QPushButton("Save Battle Settings", this);
     connect(saveButton_, &QPushButton::clicked, this, &BattleSettingsWidget::onSaveClicked);
 
     QFormLayout* layout = new QFormLayout(this);
     layout->addRow("Start gold amount:", startGoldSpinBox_);
     layout->addRow("Max unit count:", maxUnitSpinBox_);
+    layout->addRow("Game mode:", gameModeComboBox_);
     layout->addRow(saveButton_);
 }
 
 BattleSettingsWidget::~BattleSettingsWidget(){}
 
 void BattleSettingsWidget::onSaveClicked(){
-    this->battleSettingPtr_->saveBattleSettings(startGoldSpinBox_->value(), maxUnitSpinBox_->value());
+    GameMode selectedGameMode = static_cast<GameMode>(gameModeComboBox_->currentData().toInt());
+    this->battleSettingPtr_->saveBattleSettings(startGoldSpinBox_->value(), maxUnitSpinBox_->value(), selectedGameMode);
 
     accept();
 }

@@ -1,8 +1,9 @@
 #include "player.hpp"
 #include <algorithm>
 
-Player::Player(int playerIdx, int startColumn) : startColumn_(startColumn) {
-    this->gold_ = 300;
+Player::Player(int playerIdx, int startColumn, bool isAI, int startGold) : startColumn_(startColumn) {
+    this->isAI_ = isAI;
+    this->gold_ = startGold;
     this->playerIdx_ = playerIdx;
 }
 
@@ -48,6 +49,10 @@ void Player::addDamageReceived(int damage){
 void Player::subtractGold(int minus){
     this->gold_ = this->gold_ - minus;
     return;
+}
+
+bool Player::isAI(){
+    return this->isAI_;
 }
 
 int Player::getGold(){
