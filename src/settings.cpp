@@ -1,12 +1,7 @@
 #include "settings.hpp"
 
-void Setting::saveSettings(int newBrightness, pair<int, int> newWindowSize){
-    brightness_ = newBrightness;
+void Setting::saveSettings(pair<int, int> newWindowSize){
     windowSize_ = newWindowSize;
-}
-
-int Setting::getBrightness() const {
-    return brightness_;
 }
 
 pair<int, int> Setting::getWindowSize() const {

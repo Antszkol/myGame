@@ -130,7 +130,7 @@ Unit* MapHandler::getUnitSelected() const {
 }
 
 TileWidget* MapHandler::getTileWidgetPtr(pair<int, int> tileIdx) const {
-    return this->tileWidgets_[(tileIdx.first * this->map_.getMapSize().first) + tileIdx.second];
+    return this->tileWidgets_[(tileIdx.second * this->map_.getMapSize().first) + tileIdx.first];
 }
 
 const std::map<Tile*, int>& MapHandler::getTilesSelectedMap() const {

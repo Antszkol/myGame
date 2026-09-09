@@ -5,17 +5,19 @@
 #include "mapTiles.hpp"
 
 
-Map::Map(pair<int, int> argMapSize){
-    this->mapSize_ = argMapSize;
-    this->loadMap();
+Map::Map(mapType type){
+    this->loadMap(type);
 }
 
-void Map::loadMap(){
+void Map::loadMap(mapType type){
+    const MapLayout& layout = (type == mapType::bog) ? mapTiles::bog : mapTiles::river;
+    this->mapSize_ = layout.second;
+
     for(int i = 0; i < this->mapSize_.first * this->mapSize_.second; i++){
         pair<int, int> idx;
         idx.first = i % this->mapSize_.first;
         idx.second = i / this->mapSize_.first;
-        this->mapTiles_.push_back(new Tile(idx, mapTiles::river[i]));
+        this->mapTiles_.push_back(new Tile(idx, layout.first[i]));
     }
 }
 
@@ -66,7 +68,7 @@ vector<Tile*> Map::getTileSurrounding(Tile* baseTilePtr){
 }
 
 Tile* Map::getTileByIndex(pair<int, int> argTileIndex) const {
-    return this->mapTiles_[argTileIndex.first * this->getMapSize().first + argTileIndex.second];
+    return this->mapTiles_[argTileIndex.second * this->getMapSize().first + argTileIndex.first];
 }
 
 pair<int, int> Map::getMapSize() const {

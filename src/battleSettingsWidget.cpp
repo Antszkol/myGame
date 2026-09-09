@@ -29,6 +29,15 @@ BattleSettingsWidget::BattleSettingsWidget(BattleSetting* battleSettingPtr, QWid
         gameModeComboBox_->setCurrentIndex(currentModeIndex);
     }
 
+    mapTypeComboBox_ = new QComboBox(this);
+    for(const auto& [type, name] : MapTypeMap){
+        mapTypeComboBox_->addItem(QString::fromStdString(name), QVariant::fromValue(static_cast<int>(type)));
+    }
+    int currentMapTypeIndex = mapTypeComboBox_->findData(QVariant::fromValue(static_cast<int>(battleSettingPtr->getMapType())));
+    if(currentMapTypeIndex != -1){
+        mapTypeComboBox_->setCurrentIndex(currentMapTypeIndex);
+    }
+
     saveButton_ = new QPushButton("Save Battle Settings", this);
     connect(saveButton_, &QPushButton::clicked, this, &BattleSettingsWidget::onSaveClicked);
 
@@ -36,6 +45,7 @@ BattleSettingsWidget::BattleSettingsWidget(BattleSetting* battleSettingPtr, QWid
     layout->addRow("Start gold amount:", startGoldSpinBox_);
     layout->addRow("Max unit count:", maxUnitSpinBox_);
     layout->addRow("Game mode:", gameModeComboBox_);
+    layout->addRow("Map:", mapTypeComboBox_);
     layout->addRow(saveButton_);
 }
 
@@ -43,7 +53,8 @@ BattleSettingsWidget::~BattleSettingsWidget(){}
 
 void BattleSettingsWidget::onSaveClicked(){
     GameMode selectedGameMode = static_cast<GameMode>(gameModeComboBox_->currentData().toInt());
-    this->battleSettingPtr_->saveBattleSettings(startGoldSpinBox_->value(), maxUnitSpinBox_->value(), selectedGameMode);
+    mapType selectedMapType = static_cast<mapType>(mapTypeComboBox_->currentData().toInt());
+    this->battleSettingPtr_->saveBattleSettings(startGoldSpinBox_->value(), maxUnitSpinBox_->value(), selectedGameMode, selectedMapType);
 
     accept();
 }

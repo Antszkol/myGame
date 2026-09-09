@@ -6,16 +6,19 @@
 
 using namespace std;
 
+/// @brief App-wide display settings (independent of any particular battle).
 class Setting{
     public:
-        void saveSettings(int brightness, pair<int, int> windowSize);
+        /// @param windowSize new window resolution.
+        void saveSettings(pair<int, int> windowSize);
 
-        int getBrightness() const;
+        /// @return current window resolution.
         pair<int, int> getWindowSize() const;
+
+        /// @return every resolution offered in the settings dialog.
         vector<pair<int, int>> getAvailableResolutions() const;
     private:
         string path_;
-        int brightness_;
         pair<int, int> windowSize_ = {1920, 1080};
         vector<pair<int, int>> availableResolutions_ = {
             {1920, 1080},

@@ -7,7 +7,7 @@
 Tile::Tile(pair<int, int> tileIndex, int tileType) :
     tileIndex_(tileIndex),
     tileType_(tileType),
-    speedImpact_(1),
+    speedImpact_(tileType == TileType::mud ? 2 : 1),
     moraleImpact_(0)
     {
         occupant_ = nullptr;

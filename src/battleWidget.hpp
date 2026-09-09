@@ -12,18 +12,32 @@
 #include "turnHandler.hpp"
 #include "actionWidget.hpp"
 
+/// @brief The actual battle screen: hosts the map, shop, and action UI, and owns the TurnHandler (and
+/// AIHandler, for VsAI battles) driving the current battle.
 class BattleWidget : public BaseScreenWidget{
     Q_OBJECT
     public slots:
+        /// @brief Starts a new battle: (re)creates TurnHandler/MapWidget (and AIHandler if
+        /// GameMode::VsAI) for battlePtr/battleSettingPtr.
+        /// @param battlePtr the battle to show.
+        /// @param battleSettingPtr the settings it was created with.
         void setBattle(Battle* battlePtr, BattleSetting* battleSettingPtr);
+
+        /// @brief Shows the result screen, deletes the map, and navigates back to the menu.
+        /// @param winnerPtr the winning player.
         void battleEnded(const Player* winnerPtr);
 
     public:
         BattleWidget();
         ~BattleWidget();
 
+        /// @brief Creates and docks the shop widget into the layout.
         void setShopWidget();
+
+        /// @brief Creates and docks the action widget into the layout.
         void setActionWidget();
+
+        /// @return the current battle's map widget, or nullptr if none is active.
         MapWidget* getMapWidgetPtr();
 
     private:
