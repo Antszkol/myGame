@@ -1,5 +1,9 @@
 # Build catalogues
 build/
 
+# Generated Doxygen output
+docs/
+
 Notes.md
+Doxyfile
 .vscode/

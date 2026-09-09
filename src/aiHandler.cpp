@@ -2,6 +2,7 @@
 
 #include <QEventLoop>
 #include <QTimer>
+#include <random>
 
 AIHandler::AIHandler(Map& map, Player* playerPtr, TurnHandler* turnHandlerPtr, MapHandler* mapHandlerPtr) : map_(map) {
     this->playerPtr_ = playerPtr;
@@ -79,8 +80,12 @@ void AIHandler::executeTurn(){
         }
     }
 
+    static std::mt19937 randomEngine(std::random_device{}());
+    static std::uniform_int_distribution<int> unitTypeRoll(1, 2);
+
     for(const auto& tilePointer : closeTiles){
-        this->turnHandlerPtr_->recruitUnitSlot(UnitType::footman);
+        UnitType recruitedUnitType = (unitTypeRoll(randomEngine) == 1) ? UnitType::footman : UnitType::archer;
+        this->turnHandlerPtr_->recruitUnitSlot(recruitedUnitType);
         this->turnHandlerPtr_->confirmUnitDeployment(this->mapHandlerPtr_->getTileWidgetPtr(tilePointer->getTileIndex()));
         this->waitMs(800);
     }
